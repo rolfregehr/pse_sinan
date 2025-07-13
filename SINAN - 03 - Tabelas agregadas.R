@@ -224,7 +224,7 @@ graf_idade_genero_tipo <-   sinan |>
   scale_color_brewer(name = "Gênero", palette = "Set2")+
   # Adições para melhorar o gráfico:
   labs(
-    title = "Distribuição de Casos de Violência por Idade e Tipo (a partir de 2015)",
+    title = "Distribuição de Casos de Violência\npor Idade e Tipo (a partir de 2015)",
     x = "Idade (anos)",
     y = "Número de Ocorrências (Casos Confirmados)",
     caption = "Fonte: SINAN - Sistema de Informação de Agravos de Notificação"
@@ -302,7 +302,7 @@ graf_idade_racacor_tipo <-   sinan |>
   scale_colour_viridis_d(name = "Raça/Cor")+
   # Adições para melhorar o gráfico:
   labs(
-    title = "Distribuição de Casos de Violência por Idade e Tipo (a partir de 2015)",
+    title = "Distribuição de Casos de Violência\npor Idade e Tipo (a partir de 2015)",
     x = "Idade (anos)",
     y = "Número de Ocorrências (Casos Confirmados)",
     caption = "Fonte: SINAN - Sistema de Informação de Agravos de Notificação"
@@ -373,7 +373,7 @@ graf_idade_tipo_racacor <-   sinan |>
   scale_colour_viridis_d(name = "Raça/Cor")+
   # Adições para melhorar o gráfico:
   labs(
-    title = "Distribuição de Casos de Violência por Idade e Tipo (a partir de 2015)",
+    title = "Distribuição de Casos de Violência\npor Idade e Tipo (a partir de 2015)",
     x = "Idade (anos)",
     y = "Número de Ocorrências (Casos Confirmados)",
     caption = "Fonte: SINAN - Sistema de Informação de Agravos de Notificação"

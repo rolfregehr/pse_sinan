@@ -20,9 +20,9 @@ gggggggggggggggggg
 
 ## Tipos de violência de 2015 a 2024
 
-<iframe src="graf_tipo.html" width="100%" height="800px" frameborder="0"></iframe>
+<iframe src="graf_tipo.html" width="100%" height="1000px" frameborder="0"></iframe>
 
-
+POSITRON
 
 Por idade 
 
@@ -32,11 +32,11 @@ Por idade
 
 Aqui está o gráfico que ilustra as ocorrências de violência:
 
-![Distribuição de Ocorrências de Violência por Idade, Gênero e Tipo](graf_idade_genero_tipo.svg){#fig-violencia-idade fig-align="center" width="80%"}
+![](graf_idade_genero_tipo.svg){fig-align="center" width="80%"}
 
-![Distribuição de Ocorrências de Violência por Idade, Gênero e Tipo](graf_idade_racacor_tipo.svg){#fig-violencia-idade fig-align="center" width="80%"}
+![](graf_idade_racacor_tipo.svg){fig-align="center" width="80%"}
 
-![Distribuição de Ocorrências de Violência por Idade, Gênero e Tipo](graf_idade_tipo_racacor.svg){#fig-violencia-idade fig-align="center" width="80%"}
+![](graf_idade_tipo_racacor.svg){fig-align="center" width="80%"}
 
 
 
