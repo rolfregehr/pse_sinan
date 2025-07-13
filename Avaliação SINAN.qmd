@@ -1,0 +1,46 @@
+---
+title: "Avaliação SINAN / PSE"
+author: "DataSenado"
+format: html
+css: custom.css
+---
+
+# Introdução
+
+::: justified-text
+O Sistema de Informações de Agravos de Notificação (SINAN), é uma ferramenta do Ministério da Saúde do Brasil que tem como objetivo coletar, transmitir e disseminar dados sobre doenças e agravos de notificação compulsória. Um desses agravos se referem às violências. Semanalmente ([PORTARIA Nº 1.061, DE 18 DE MAIO DE 2020](https://bvsms.saude.gov.br/bvs/saudelegis/gm/2020/prt1061_29_05_2020.html)) as secretarias de saúde (municipais e estaduais) devem notificar casos de violência doméstica, sexual e ou tentativa de suicídio.
+
+Já o [Programa Saúde na Escola (PSE)](https://portal.mec.gov.br/expansao-da-rede-federal/194secretarias-112877938/secad-educacao-continuada-223369541/14578-programa-saude-nas-escolas#:~:text=O%20PSE%20tem%20como%20objetivo,da%20rede%20p%C3%BAblica%20de%20ensino.) tem como objetivo "contribuir para a formação integral dos estudantes por meio de ações de promoção, prevenção e atenção à saúde, com vistas ao enfrentamento das vulnerabilidades que comprometem o pleno desenvolvimento de crianças e jovens da rede pública de ensino".
+
+Ambas ações tem relação quando se trata de violência contra a mulher, seja na identificação e registro (SINAN) ou na prevenção (PSE) que têm ações de saúde mental, que contribui para maior consciência da situação de violência e preventivas, com a ação de promoção da cultura de paz, cidadania e direitos humanos e prevenção da violência e dos acidentes. Ambos com potencial de reduzir a violência na perspectiva da vítima e do eventual agressor.
+
+# SINAN
+
+gggggggggggggggggg
+
+## Tipos de violência de 2015 a 2024
+
+<iframe src="graf_tipo.html" width="100%" height="800px" frameborder="0"></iframe>
+
+
+
+Por idade 
+
+<iframe src="graf_tipo_idade.html" width="100%" height="800px" frameborder="0"></iframe>
+
+
+
+Aqui está o gráfico que ilustra as ocorrências de violência:
+
+![Distribuição de Ocorrências de Violência por Idade, Gênero e Tipo](graf_idade_genero_tipo.svg){#fig-violencia-idade fig-align="center" width="80%"}
+
+![Distribuição de Ocorrências de Violência por Idade, Gênero e Tipo](graf_idade_racacor_tipo.svg){#fig-violencia-idade fig-align="center" width="80%"}
+
+![Distribuição de Ocorrências de Violência por Idade, Gênero e Tipo](graf_idade_tipo_racacor.svg){#fig-violencia-idade fig-align="center" width="80%"}
+
+
+
+
+:::
+
+
