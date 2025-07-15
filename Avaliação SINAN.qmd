@@ -39,8 +39,6 @@ Aqui está o gráfico que ilustra as ocorrências de violência:
 ![](graf_idade_tipo_racacor.svg){fig-align="center" width="80%"}
 
 
-
-
 :::
 
 
