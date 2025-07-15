@@ -1,0 +1,1 @@
+Criar em coleta dos dados filtro para quais arquivos serem baixados
