@@ -1,16 +1,19 @@
 rm(list = ls())
 pacman::p_load(tidyverse, RColorBrewer, ggiraph, gtable, grid)
-setwd("C:/.r/pse_sinan/")
 load('./rda/sinan')
+
+
+# Auxiliares
+fator_raca_cor <- sinan |> group_by(raca_cor) |> reframe(n=n()) |> arrange(-n) |> slice(1:6) |> pull(raca_cor)
 
 
 # Por sexo e idade da vítima ####
 
-sinan |>
+graf_genero_idade <- sinan |>
   filter(idade >= 0 & idade <= 100,
          year(DT_OCOR) == 2024,
          genero != 'NI') |> 
-  mutate(raca_cor = factor(raca_cor, levels = c( 'Parda','Branca', 'Preta', 'Amarela', 'Indígena', 'Ignorada'))) |> 
+  mutate(raca_cor = factor(raca_cor, levels = fator_raca_cor)) |> 
   group_by(genero, idade, raca_cor) |> 
   reframe(n=n()) |> 
   ggplot(aes(x = idade, y = n, colour = genero))+
@@ -25,38 +28,42 @@ sinan |>
   scale_x_continuous(breaks = seq(0, 100, by = 10))
 
 
+ggsave('graf_genero_idade.svg', plot = graf_genero_idade)
 
 # Tipo de violência por ano ####
 
 tipos <- sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
-  select(DT_OCOR, starts_with('VIOL')) |> 
-  pivot_longer(2:13, names_to = 'tipo', values_to = 'n') |> 
+  select(DT_OCOR,  VIOL_FISIC, VIOL_PSICO,VIOL_TORT, VIOL_SEXU, VIOL_TRAF, VIOL_FINAN, VIOL_NEGLI, VIOL_INFAN, VIOL_LEGAL, VIOL_OUTR) |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0),
          data = floor_date(DT_OCOR, unit = 'month')) |> 
   group_by(tipo) |> 
   reframe(n=sum(n)) |> 
   arrange(-n) |> 
-  slice(1:5) |> pull(tipo)
+  slice(1:6) |> pull(tipo)
 
 
 graf <- sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
   select(DT_OCOR, starts_with('VIOL')) |> 
-  pivot_longer(2:13, names_to = 'tipo', values_to = 'n') |> 
-  filter(tipo %in% tipos ) |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
+  filter(tipo %in% tipos) |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0),
          data = floor_date(DT_OCOR, unit = 'month')) |> 
   group_by(data, tipo) |> 
   reframe(n= sum(n)) |> 
-  mutate(tipo = as.factor(tipo),
-         tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
+  mutate(tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
                           tipo == 'VIOL_NEGLI' ~ 'Negligência',
                           tipo == 'VIOL_PSICO' ~ 'Psicológica',
                           tipo == 'VIOL_SEXU' ~ 'Sexual',
-                          T ~ 'Outras')) |> 
+                          tipo == 'VIOL_TORT' ~ 'Tortura',
+                          T ~ 'Outras'),
+         tipo = factor(tipo, levels = c('Física', 'Psicológica', 'Outras', 'Sexual', 'Negligência', 'Tortura')),
+         n = replace_na(n, 0)
+         ) |> 
   ggplot(mapping = aes(
     x = data,
     y = n,
@@ -86,7 +93,8 @@ graf <- sinan |>
            # annotate("rect", xmin = 2.5, xmax = 7.5, ymin = 8.5, ymax = 11,
            #          fill = "lightgreen", alpha = 0.5, color = "black", linetype = "solid") +
            # annotate("text", x = 5, y = 9.75, label = "Minha Caixa de Texto", size = 4)
-           )
+  )
+
   
 
 interactive_plot <- girafe(ggobj = graf)     
@@ -108,32 +116,35 @@ htmltools::save_html(interactive_plot, "graf_tipo.html")
 tipos <- sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
   select(DT_OCOR, starts_with('VIOL')) |> 
-  pivot_longer(2:13, names_to = 'tipo', values_to = 'n') |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0),
          data = floor_date(DT_OCOR, unit = 'month')) |> 
   group_by(tipo) |> 
   reframe(n=sum(n)) |> 
   arrange(-n) |> 
-  slice(1:5) |> pull(tipo)
+  slice(1:6) |> pull(tipo)
 
 
 graf_idade <- sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
   select(idade, starts_with('VIOL')) |> 
-  pivot_longer(2:13, names_to = 'tipo', values_to = 'n') |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
   filter(tipo %in% tipos ) |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0)) |> 
   group_by(idade, tipo) |> 
   reframe(n= sum(n)) |> 
   filter(idade>0 & idade <= 100) |> 
-  mutate(tipo = as.factor(tipo),
-         tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
+  mutate(tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
                           tipo == 'VIOL_NEGLI' ~ 'Negligência',
                           tipo == 'VIOL_PSICO' ~ 'Psicológica',
                           tipo == 'VIOL_SEXU' ~ 'Sexual',
-                          T ~ 'Outras')) |> 
+                          tipo == 'VIOL_TORT' ~ 'Tortura',
+                          T ~ 'Outras'),
+         tipo = factor(tipo, levels = c('Física', 'Psicológica', 'Outras', 'Sexual', 'Negligência', 'Tortura')),
+         n = replace_na(n, 0)
+  ) |> 
   ggplot(mapping = aes(
     x = idade,
     y = n,
@@ -187,38 +198,41 @@ htmltools::save_html(interactive_plot_idade, "graf_tipo_idade.html")
 tipos <- sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
   select(DT_OCOR, starts_with('VIOL')) |> 
-  pivot_longer(2:13, names_to = 'tipo', values_to = 'n') |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0),
          data = floor_date(DT_OCOR, unit = 'month')) |> 
   group_by(tipo) |> 
   reframe(n=sum(n)) |> 
   arrange(-n) |> 
-  slice(1:5) |> pull(tipo)
+  slice(1:6) |> pull(tipo)
 
 ## Gera o gráfico ####
 graf_idade_genero_tipo <-   sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
   select(genero, idade, starts_with('VIOL')) |> 
-  pivot_longer(3:13, names_to = 'tipo', values_to = 'n') |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
   filter(tipo %in% tipos ) |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0)) |> 
   group_by(idade, tipo, genero) |> 
   reframe(n= sum(n)) |> 
   filter(idade>0 & idade <= 100) |> 
-  mutate(tipo = as.factor(tipo),
-         tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
+  mutate(tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
                           tipo == 'VIOL_NEGLI' ~ 'Negligência',
                           tipo == 'VIOL_PSICO' ~ 'Psicológica',
                           tipo == 'VIOL_SEXU' ~ 'Sexual',
-                          T ~ 'Outras')) |> 
+                          tipo == 'VIOL_TORT' ~ 'Tortura',
+                          T ~ 'Outras'),
+         tipo = factor(tipo, levels = c('Física', 'Psicológica', 'Outras', 'Sexual', 'Negligência', 'Tortura')),
+         n = replace_na(n, 0)
+  ) |> 
   ggplot(mapping = aes(
     x = idade,
     y = n,
     color = genero
   ))+
-  geom_line(linewidth = 1.2)+
+  geom_line(linewidth = 1.)+
   facet_wrap(~tipo)+
   theme_minimal()+
   scale_color_brewer(name = "Gênero", palette = "Set2")+
@@ -226,7 +240,7 @@ graf_idade_genero_tipo <-   sinan |>
   labs(
     title = "Distribuição de Casos de Violência\npor Idade e Tipo (a partir de 2015)",
     x = "Idade (anos)",
-    y = "Número de Ocorrências (Casos Confirmados)",
+    y = "Número de Ocorrências",
     caption = "Fonte: SINAN - Sistema de Informação de Agravos de Notificação"
   ) +
   theme(
@@ -264,47 +278,50 @@ ggsave('graf_idade_genero_tipo.svg',
 tipos <- sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
   select(DT_OCOR, starts_with('VIOL')) |> 
-  pivot_longer(2:13, names_to = 'tipo', values_to = 'n') |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0),
          data = floor_date(DT_OCOR, unit = 'month')) |> 
   group_by(tipo) |> 
   reframe(n=sum(n)) |> 
   arrange(-n) |> 
-  slice(1:5) |> pull(tipo)
+  slice(1:6) |> pull(tipo)
 
 ## Gera o gráfico ####
 
 graf_idade_racacor_tipo <-   sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
   select(raca_cor, idade, starts_with('VIOL')) |> 
-  pivot_longer(3:13, names_to = 'tipo', values_to = 'n') |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
   filter(tipo %in% tipos ) |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0)) |> 
   group_by(idade, tipo, raca_cor) |> 
   reframe(n= sum(n)) |> 
   filter(idade>0 & idade <= 100) |> 
-  mutate(tipo = as.factor(tipo),
-         tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
+  mutate(tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
                           tipo == 'VIOL_NEGLI' ~ 'Negligência',
                           tipo == 'VIOL_PSICO' ~ 'Psicológica',
                           tipo == 'VIOL_SEXU' ~ 'Sexual',
-                          T ~ 'Outras')) |> 
+                          tipo == 'VIOL_TORT' ~ 'Tortura',
+                          T ~ 'Outras'),
+         tipo = factor(tipo, levels = c('Física', 'Psicológica', 'Outras', 'Sexual', 'Negligência', 'Tortura')),
+         n = replace_na(n, 0)
+  ) |> 
   ggplot(mapping = aes(
     x = idade,
     y = n,
     color = raca_cor
   ))+
-  geom_line(linewidth = 1.2)+
+  geom_line(linewidth = 1.)+
   facet_wrap(~tipo)+
   theme_minimal()+
-  scale_colour_viridis_d(name = "Raça/Cor")+
+  scale_color_brewer(name = "Raça/Cor", palette = "Set2")+
   # Adições para melhorar o gráfico:
   labs(
     title = "Distribuição de Casos de Violência\npor Idade e Tipo (a partir de 2015)",
     x = "Idade (anos)",
-    y = "Número de Ocorrências (Casos Confirmados)",
+    y = "Número de Ocorrências",
     caption = "Fonte: SINAN - Sistema de Informação de Agravos de Notificação"
   ) +
   theme(
@@ -349,33 +366,38 @@ ggsave('graf_idade_racacor_tipo.svg',
 graf_idade_tipo_racacor <-   sinan |> 
   filter(DT_OCOR >= as.Date('2015-01-01')) |> 
   select(raca_cor, idade, starts_with('VIOL')) |> 
-  pivot_longer(3:13, names_to = 'tipo', values_to = 'n') |> 
+  pivot_longer(starts_with('VIOL'),
+               names_to = 'tipo', 
+               values_to = 'n') |> 
   filter(tipo %in% tipos ) |> 
   mutate(n = case_when(n == 1 ~ 1,
                        T ~ 0)) |> 
   group_by(idade, tipo, raca_cor) |> 
   reframe(n= sum(n)) |> 
   filter(idade>0 & idade <= 100) |> 
-  mutate(tipo = as.factor(tipo),
-         tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
+  mutate(tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
                           tipo == 'VIOL_NEGLI' ~ 'Negligência',
                           tipo == 'VIOL_PSICO' ~ 'Psicológica',
                           tipo == 'VIOL_SEXU' ~ 'Sexual',
-                          T ~ 'Outras')) |> 
+                          tipo == 'VIOL_TORT' ~ 'Tortura',
+                          T ~ 'Outras'),
+         tipo = factor(tipo, levels = c('Física', 'Psicológica', 'Outras', 'Sexual', 'Negligência', 'Tortura')),
+         n = replace_na(n, 0)
+  ) |> 
   ggplot(mapping = aes(
     x = idade,
     y = n,
     color = tipo
   ))+
-  geom_line(linewidth = 1.2)+
+  geom_line(linewidth = 1.)+
   facet_wrap(~raca_cor)+
   theme_minimal()+
-  scale_colour_viridis_d(name = "Raça/Cor")+
+  scale_color_brewer(name = "Tipo de violência", palette = "Set2")+
   # Adições para melhorar o gráfico:
   labs(
     title = "Distribuição de Casos de Violência\npor Idade e Tipo (a partir de 2015)",
     x = "Idade (anos)",
-    y = "Número de Ocorrências (Casos Confirmados)",
+    y = "Número de Ocorrências",
     caption = "Fonte: SINAN - Sistema de Informação de Agravos de Notificação"
   ) +
   theme(
@@ -409,3 +431,4 @@ graf_idade_tipo_racacor <-   sinan |>
 ## Salva o gráfico ####
 ggsave('graf_idade_tipo_racacor.svg',
        plot = graf_idade_tipo_racacor)
+
