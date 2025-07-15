@@ -8,6 +8,9 @@ colunas_selecionadas <- c('ID_MUNICIP',
   'NU_IDADE_N',
   'CS_SEXO',
   'CS_RACA',
+  'VIOL_FISIC',
+  'VIOL_PSICO',
+  'VIOL_TORT',
   'VIOL_SEXU',
   'VIOL_TRAF',
   'VIOL_FINAN',
@@ -42,11 +45,12 @@ colunas_selecionadas <- c('ID_MUNICIP',
   'CICL_VID')
 
 sinan_temp <- read.dbc(arq_sinan_dbc[1]) |> 
-  select(colunas_selecionadas)
+  select(all_of(colunas_selecionadas))
 
 for(arq in arq_sinan_dbc[2:length(arq_sinan_dbc)]){
   print(arq)
-  temp <- read.dbc(arq)
+  temp <- read.dbc(arq)|> 
+    select(all_of(colunas_selecionadas))
   sinan_temp <- bind_rows(sinan_temp, temp)
 }
 
@@ -63,7 +67,9 @@ sinan <- sinan_temp |>
                               CS_RACA == 3 ~ 'Amarela',
                               CS_RACA == 4 ~ 'Parda',
                               CS_RACA == 5 ~ 'Indígena',
-                              T ~ 'Ignorado',
-         ))
+                              T ~ 'Ignorado'),
+         raca_cor = factor(raca_cor, levels = c('Parda', 'Branca', 'Ignorado', 'Preta', 'Indígena', 'Amarela')))
 
 save(sinan, file = './rda/sinan')
+
+
