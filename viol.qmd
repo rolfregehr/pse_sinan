@@ -1,0 +1,109 @@
+---
+  title: "Avaliação SINAN / PSE"
+author: "DataSenado"
+format:
+  html:
+  toc: true
+css: custom.css
+ojs: true
+execute:
+  freeze: auto
+echo: false
+---
+  
+  
+```{ojs}
+// Controles reativos do Observable
+import { Inputs } from "@observablehq/inputs"
+
+
+
+// Carrega a biblioteca Plotly.js de forma robusta
+Plotly = require("plotly.js-dist@2.27.0")
+
+// Carrega o arquivo CSV local
+tab_01 = FileAttachment("tab_01.csv").csv({ typed: true })
+
+// Extrai as colunas para arrays separados para facilitar o uso
+data = tab_01.map(d => d.data)
+dados_fisica = tab_01.map(d => d.Física)
+dados_negligencia = tab_01.map(d => d.Negligência)
+dados_outras = tab_01.map(d => d.Outras)
+dados_psico = tab_01.map(d => d.Psicológica)
+dados_sexual = tab_01.map(d => d.Sexual)
+dados_tortura = tab_01.map(d => d.Tortura)
+
+
+traces_tab_01 = () => [
+  { 
+    x: data, 
+    y: dados_fisica, 
+    mode: "lines", 
+    name: `Física` ,
+    line: {color: '#66C2A5'}
+  },
+  { 
+    x: data, 
+    y: dados_negligencia, 
+    mode: "lines", 
+    name: `Negligência`,
+    line: {color: '#FC8D62'} 
+  },
+  { 
+    x: data, 
+    y: dados_outras, 
+    mode: "lines", 
+    name: `Outras`,
+    line: {color: '#8DA0CB'} 
+  },
+  { 
+    x: data, 
+    y: dados_psico, 
+    mode: "lines", 
+    name: `Psicológica`,
+    line: {color: '#E78AC3'} 
+  },
+  { 
+    x: data, 
+    y: dados_sexual, 
+    mode: "lines", 
+    name: `Sexual`,
+    line: {color: '#A6D854'} 
+  },
+  { 
+    x: data, 
+    y: dados_tortura, 
+    mode: "lines", 
+    name: `Tortura`,
+    line: {color: '#E5C494'} 
+  }
+]
+
+
+{
+  const div = html`<div style="width:100%;height:500px;"></div>`;
+  
+  const layout = {
+    title: {
+      text: "Título do Seu Gráfico",
+      x: 0.5, // centraliza o título
+      xanchor: 'center'
+    },
+    xaxis: { title: "Data de ocorrência" },
+    yaxis: { title: "Número de casos" },
+    margin: { t: 50 }, // aumentei a margem superior para acomodar o título
+    legend: { title: { text: "Clique para ocultar/exibir" } }
+  };
+  // Renderiza o gráfico inicial
+  Plotly.newPlot(div, traces_tab_01(), layout);
+  
+  // Esta linha mágica garante que o gráfico antigo seja removido
+  // antes de um novo ser desenhado quando os sliders mudam.
+  invalidation.then(() => Plotly.purge(div));
+  
+  // Retorna o elemento div para ser exibido na página
+  return div;
+}
+
+
+```

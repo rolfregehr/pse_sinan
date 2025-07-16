@@ -3,7 +3,12 @@ title: "Avaliação SINAN / PSE"
 author: "DataSenado"
 format:
   html:
+    toc: true
     css: custom.css
+ojs: true
+execute:
+  freeze: auto
+  echo: false
 ---
 
 # Introdução
@@ -13,9 +18,170 @@ O Sistema de Informações de Agravos de Notificação (SINAN), é uma ferrament
 
 Já o [Programa Saúde na Escola (PSE)](https://portal.mec.gov.br/expansao-da-rede-federal/194secretarias-112877938/secad-educacao-continuada-223369541/14578-programa-saude-nas-escolas#:~:text=O%20PSE%20tem%20como%20objetivo,da%20rede%20p%C3%BAblica%20de%20ensino.) tem como objetivo "contribuir para a formação integral dos estudantes por meio de ações de promoção, prevenção e atenção à saúde, com vistas ao enfrentamento das vulnerabilidades que comprometem o pleno desenvolvimento de crianças e jovens da rede pública de ensino".
 
-Ambas ações tem relação quando se trata de violência contra a mulher, seja na identificação e registro (SINAN) ou na prevenção (PSE) que têm ações de saúde mental, que contribui para maior consciência da situação de violência e preventivas, com a ação de promoção da cultura de paz, cidadania e direitos humanos e prevenção da violência e dos acidentes. Ambos com potencial de reduzir a violência na perspectiva da vítima e do eventual agressor.
+Ambas ações tem relação quando se trata de violência contra a mulher, seja na identificação e registro (SINAN) ou na prevenção (PSE) que têm ações de saúde mental, que contribui para maior consciência da situação de violência e preventivas, com a ação de promoção da cultura de paz, cidadania e direitos humanos e prevenção da violência e dos acidentes. Ambos com potencial de reduzir a violência na perspectiva da vítima e do eventual agressor. 
+:::
 
-# SINAN
+# Violências
+
+O sistema de notificação de agravo traz detalhes das violências sofridas em todo o território nacional
+
+## Por gênero
+
+```{ojs}
+// Controles reativos do Observable
+import { Inputs } from "@observablehq/inputs"
+
+// Carrega a biblioteca Plotly.js de forma robusta
+Plotly = require("plotly.js-dist@2.27.0")
+
+// Carrega o arquivo CSV local
+populacao = FileAttachment("dados_populacao.csv").csv({ typed: true })
+
+// Extrai as colunas para arrays separados para facilitar o uso
+idade = populacao.map(d => d.idade)
+dados_feminino = populacao.map(d => d.feminino)
+dados_masculino = populacao.map(d => d.masculino)
+
+
+traces = () => [
+  { 
+    x: idade, 
+    y: dados_feminino, 
+    mode: "lines", 
+    name: `Feminino` ,
+    line: {color: '#66C2A5'}
+  },
+  { 
+    x: idade, 
+    y: dados_masculino, 
+    mode: "lines", 
+    name: `Masculino`,
+    line: {color: '#FC8D62'} 
+  }
+]
+
+
+{
+  const div = html`<div style="width:100%;height:500px;"></div>`;
+
+  // Define o layout, incluindo os títulos dos eixos
+  const layout = {
+    xaxis: { title: "Idade" },
+    yaxis: { title: "População" },
+    margin: { t: 20 },
+    legend: { title: { text: "Clique para ocultar/exibir" } }
+  };
+
+  // Renderiza o gráfico inicial
+  Plotly.newPlot(div, traces(), layout);
+
+  // Esta linha mágica garante que o gráfico antigo seja removido
+  // antes de um novo ser desenhado quando os sliders mudam.
+  invalidation.then(() => Plotly.purge(div));
+
+  // Retorna o elemento div para ser exibido na página
+  return div;
+}
+
+
+```
+
+## Por tipo de violência (6 maiores)
+
+```{ojs}
+// Controles reativos do Observable
+import { Inputs } from "@observablehq/inputs"
+
+
+// Carrega o arquivo CSV local
+tab_01 = FileAttachment("csv/tab_01.csv").csv({ typed: true })
+
+// Extrai as colunas para arrays separados para facilitar o uso
+data = tab_01.map(d => d.data)
+dados_fisica = tab_01.map(d => d.Física)
+dados_negligencia = tab_01.map(d => d.Negligência)
+dados_outras = tab_01.map(d => d.Outras)
+dados_psico = tab_01.map(d => d.Psicológica)
+dados_sexual = tab_01.map(d => d.Sexual)
+dados_tortura = tab_01.map(d => d.Tortura)
+
+
+traces_tab_01 = () => [
+  { 
+    x: data, 
+    y: dados_fisica, 
+    mode: "lines", 
+    name: `Física` ,
+    line: {color: '#66C2A5'}
+  },
+  { 
+    x: data, 
+    y: dados_negligencia, 
+    mode: "lines", 
+    name: `Negligência`,
+    line: {color: '#FC8D62'} 
+  },
+  { 
+    x: data, 
+    y: dados_outras, 
+    mode: "lines", 
+    name: `Outras`,
+    line: {color: '#8DA0CB'} 
+  },
+  { 
+    x: data, 
+    y: dados_psico, 
+    mode: "lines", 
+    name: `Psicológica`,
+    line: {color: '#E78AC3'} 
+  },
+  { 
+    x: data, 
+    y: dados_sexual, 
+    mode: "lines", 
+    name: `Sexual`,
+    line: {color: '#A6D854'} 
+  },
+  { 
+    x: data, 
+    y: dados_tortura, 
+    mode: "lines", 
+    name: `Tortura`,
+    line: {color: '#E5C494'} 
+  }
+]
+
+
+{
+  const div = html`<div style="width:100%;height:500px;"></div>`;
+
+ const layout = {
+  title: {
+    text: "Título do Seu Gráfico",
+    x: 0.5, // centraliza o título
+    xanchor: 'center'
+  },
+  xaxis: { title: "Data de ocorrência" },
+  yaxis: { title: "Número de casos" },
+  margin: { t: 50 }, // aumentei a margem superior para acomodar o título
+  legend: { title: { text: "Clique para ocultar/exibir" } }
+};
+  // Renderiza o gráfico inicial
+  Plotly.newPlot(div, traces_tab_01(), layout);
+
+  // Esta linha mágica garante que o gráfico antigo seja removido
+  // antes de um novo ser desenhado quando os sliders mudam.
+  invalidation.then(() => Plotly.purge(div));
+
+  // Retorna o elemento div para ser exibido na página
+  return div;
+}
+
+
+```
+
+As violências contidas em **'Outras'** são: _financeira,_ _trabalho infantil_, _violência policial_, _tráfico de seres humanos_.
+
 
 ## Tipos de violência de 2015 a 2024
 
@@ -38,6 +204,6 @@ Aqui está o gráfico que ilustra as ocorrências de violência:
 ![](graf_idade_tipo_racacor.svg){fig-align="center" width="80%"}
 
 
-:::
+
 
 

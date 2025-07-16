@@ -1,0 +1,79 @@
+---
+title: "Gráfico Interativo de População por Idade e Gênero"
+format:
+  html:
+    toc: true
+ojs: true
+execute:
+  freeze: auto
+  echo: false
+---
+
+# Análise Populacional Interativa
+
+Este documento **Quarto** (HTML) integra **ObservableJS** para carregar dados de um arquivo CSV e visualizá-los com **Plotly.js**, usando _sliders_ reativos para ajustar os dados.
+
+## 1. Bibliotecas
+
+Carregamos as bibliotecas necessárias para os controles interativos e para a plotagem do gráfico.
+
+```{ojs}
+// Controles reativos do Observable
+import { Inputs } from "@observablehq/inputs"
+
+// Carrega a biblioteca Plotly.js de forma robusta
+Plotly = require("plotly.js-dist@2.27.0")
+
+// Carrega o arquivo CSV local
+populacao = FileAttachment("dados_populacao.csv").csv({ typed: true })
+
+// Extrai as colunas para arrays separados para facilitar o uso
+idade = populacao.map(d => d.idade)
+dados_feminino = populacao.map(d => d.feminino)
+dados_masculino = populacao.map(d => d.masculino)
+
+
+traces = () => [
+  { 
+    x: idade, 
+    y: dados_feminino, 
+    mode: "lines", 
+    name: `Feminino` ,
+    line: {color: 'orange'}
+  },
+  { 
+    x: idade, 
+    y: dados_masculino, 
+    mode: "lines", 
+    name: `Masculino`,
+    line: {color: 'yellow'} 
+  }
+]
+
+
+{
+  const div = html`<div style="width:100%;height:400px;"></div>`;
+
+  // Define o layout, incluindo os títulos dos eixos
+  const layout = {
+    xaxis: { title: "Idade" },
+    yaxis: { title: "População" },
+    margin: { t: 20 },
+    legend: { title: { text: "Clique para ocultar/exibir" } }
+  };
+
+  // Renderiza o gráfico inicial
+  Plotly.newPlot(div, traces(), layout);
+
+  // Esta linha mágica garante que o gráfico antigo seja removido
+  // antes de um novo ser desenhado quando os sliders mudam.
+  invalidation.then(() => Plotly.purge(div));
+
+  // Retorna o elemento div para ser exibido na página
+  return div;
+}
+
+
+```
+
+

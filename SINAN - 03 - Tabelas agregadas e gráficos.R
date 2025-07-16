@@ -432,3 +432,49 @@ graf_idade_tipo_racacor <-   sinan |>
 ggsave('graf_idade_tipo_racacor.svg',
        plot = graf_idade_tipo_racacor)
 
+
+
+
+# Tabelas fonte ####
+
+pacman::p_load(tidyverse)
+load('./rda/sinan')
+
+tipos <- sinan |> 
+  filter(DT_OCOR >= as.Date('2015-01-01')) |> 
+  select(DT_OCOR,  VIOL_FISIC, VIOL_PSICO,VIOL_TORT, VIOL_SEXU, VIOL_TRAF, VIOL_FINAN, VIOL_NEGLI, VIOL_INFAN, VIOL_LEGAL, VIOL_OUTR) |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
+  mutate(n = case_when(n == 1 ~ 1,
+                       T ~ 0),
+         data = floor_date(DT_OCOR, unit = 'month')) |> 
+  group_by(tipo) |> 
+  reframe(n=sum(n)) |> 
+  arrange(-n) |> 
+  slice(1:6) |> pull(tipo)
+
+
+## Tabela 1 - por tipo de violência ####
+
+tab_01 <- 
+sinan |> 
+  filter(DT_OCOR >= as.Date('2015-01-01')) |> 
+  select(DT_OCOR, starts_with('VIOL')) |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
+  filter(tipo %in% tipos) |> 
+  mutate(n = case_when(n == 1 ~ 1,
+                       T ~ 0),
+         data = floor_date(DT_OCOR, unit = 'month')) |> 
+  group_by(data, tipo) |> 
+  reframe(n= sum(n)) |> 
+  mutate(tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
+                          tipo == 'VIOL_NEGLI' ~ 'Negligência',
+                          tipo == 'VIOL_PSICO' ~ 'Psicológica',
+                          tipo == 'VIOL_SEXU' ~ 'Sexual',
+                          tipo == 'VIOL_TORT' ~ 'Tortura',
+                          T ~ 'Outras'),
+         tipo = factor(tipo, levels = c('Física', 'Psicológica', 'Outras', 'Sexual', 'Negligência', 'Tortura')),
+         n = replace_na(n, 0)  ) |> 
+  pivot_wider(names_from = tipo, values_from = n, values_fill = 0)
+
+
+write.csv(tab_01, './csv/tab_01.csv')
