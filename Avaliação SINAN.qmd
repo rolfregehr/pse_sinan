@@ -3,7 +3,13 @@ title: "Avaliação SINAN / PSE"
 author: "DataSenado"
 format:
   html:
+    grid: 
+      body-width: 1200px
+      sidebar-width: 100px
+      margin-width: 100px
     toc: true
+    toc-title: "Conteúdo"
+    max-width: 1000px
     css: custom.css
 ojs: true
 execute:
@@ -153,19 +159,40 @@ traces_tab_01 = () => [
 
 
 {
-  const div = html`<div style="width:100%;height:500px;"></div>`;
+  const div = html`<div style="width:800px;height:100%;"></div>`;
 
  const layout = {
-  title: {
-    text: "Título do Seu Gráfico",
-    x: 0.5, // centraliza o título
-    xanchor: 'center'
-  },
-  xaxis: { title: "Data de ocorrência" },
-  yaxis: { title: "Número de casos" },
-  margin: { t: 50 }, // aumentei a margem superior para acomodar o título
-  legend: { title: { text: "Clique para ocultar/exibir" } }
-};
+    title: {
+      text: "Violências por idade e tipo",
+      x: 0.5,
+      xanchor: 'center'
+    },
+    xaxis: { title: "Idade da vítima" },
+    yaxis: { title: "Número de casos" },
+    margin: { t: 50, r: 150 }, // margem direita para os botões
+    legend: { title: { text: "Clique para ocultar/exibir" } },
+    updatemenus: [{
+      type: "buttons",
+      direction: "left",
+      x: 1.02,
+      xanchor: "left",
+      y: 0.5,
+      yanchor: "middle",
+      buttons: [
+        {
+          method: "restyle",
+          args: [{"visible": [true, true, true, true, true, true]}],
+          label: "Mostrar Todos"
+        },
+        {
+          method: "restyle", 
+          args: [{"visible": ["legendonly", "legendonly", "legendonly", "legendonly", "legendonly", "legendonly"]}],
+          label: "Apagar Todos"
+        }
+      ]
+    }]
+  };
+  
   // Renderiza o gráfico inicial
   Plotly.newPlot(div, traces_tab_01(), layout);
 
@@ -283,7 +310,7 @@ traces_tab_02 = () => [
       ]
     }]
   };
-  
+
   // Renderiza o gráfico inicial
   Plotly.newPlot(div, traces_tab_02(), layout);
 
