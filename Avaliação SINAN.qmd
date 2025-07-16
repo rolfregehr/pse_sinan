@@ -68,10 +68,12 @@ traces = () => [
 
 
 {
-  const div = html`<div style="width:100%;height:500px;"></div>`;
+  const div = html`<div style="width:1200px;height:600px;"></div>`;
 
   // Define o layout, incluindo os títulos dos eixos
   const layout = {
+    width: 1200,        // Largura fixa
+    height: 600,        // Altura fixa
     xaxis: { title: "Idade" },
     yaxis: { title: "População" },
     margin: { t: 20 },
@@ -79,7 +81,7 @@ traces = () => [
   };
 
   // Renderiza o gráfico inicial
-  Plotly.newPlot(div, traces(), layout);
+  Plotly.newPlot(div, traces(), layout, {responsive: true});
 
   // Esta linha mágica garante que o gráfico antigo seja removido
   // antes de um novo ser desenhado quando os sliders mudam.
@@ -162,6 +164,9 @@ traces_tab_01 = () => [
   const div = html`<div style="width:800px;height:100%;"></div>`;
 
  const layout = {
+    width: 1200,        // Largura fixa
+    height: 600,        // Altura fixa
+  
     title: {
       text: "Violências por idade e tipo",
       x: 0.5,
@@ -277,11 +282,14 @@ traces_tab_02 = () => [
 
 
 {
-  const div = html`<div style="width:100%;height:500px;"></div>`;
+  const div = html`<div style="width:1200px;height:600px;"></div>`;
+
 
  const layout = {
+    width: 1200,        // Largura fixa
+    height: 600,        // Altura fixa
     title: {
-      text: "Violências por idade e tipo",
+    text: "Violências por idade e tipo",
       x: 0.5,
       xanchor: 'center'
     },
