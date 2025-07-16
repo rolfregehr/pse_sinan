@@ -90,7 +90,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#por-gênero" id="toc-por-gênero" class="nav-link" data-scroll-target="#por-gênero">Por gênero</a></li>
   <li><a href="#por-tipo-de-violência-6-maiores" id="toc-por-tipo-de-violência-6-maiores" class="nav-link" data-scroll-target="#por-tipo-de-violência-6-maiores">Por tipo de violência (6 maiores)</a></li>
-  <li><a href="#tipos-de-violência-de-2015-a-2024" id="toc-tipos-de-violência-de-2015-a-2024" class="nav-link" data-scroll-target="#tipos-de-violência-de-2015-a-2024">Tipos de violência de 2015 a 2024</a></li>
+  <li><a href="#por-tipo-e-idade" id="toc-por-tipo-e-idade" class="nav-link" data-scroll-target="#por-tipo-e-idade">Por tipo e idade</a></li>
+  <li><a href="#outros" id="toc-outros" class="nav-link" data-scroll-target="#outros">Outros</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -416,14 +417,197 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>As violências contidas em <strong>‘Outras’</strong> são: <em>financeira,</em> <em>trabalho infantil</em>, <em>violência policial</em>, <em>tráfico de seres humanos</em>.</p>
 </section>
-<section id="tipos-de-violência-de-2015-a-2024" class="level2">
-<h2 class="anchored" data-anchor-id="tipos-de-violência-de-2015-a-2024">Tipos de violência de 2015 a 2024</h2>
-<iframe src="graf_tipo.html" width="100%" height="800" frameborder="0">
-</iframe>
-<p>POSITRON</p>
-<p>Por idade</p>
-<iframe src="graf_tipo_idade.html" width="100%" height="800px" frameborder="0">
-</iframe>
+<section id="por-tipo-e-idade" class="level2">
+<h2 class="anchored" data-anchor-id="por-tipo-e-idade">Por tipo e idade</h2>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="190" data-source-offset="-37"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 189;"><span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Inputs } <span class="im">from</span> <span class="st">"@observablehq/inputs"</span></span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a><span class="co">// Carrega o arquivo CSV local</span></span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>tab_02 <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"csv/tab_02.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({ <span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span> })</span>
+<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a><span class="co">// Extrai as colunas para arrays separados para facilitar o uso</span></span>
+<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>idade_02 <span class="op">=</span> tab_02<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">idade</span>)</span>
+<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a>dados_fisica_02 <span class="op">=</span> tab_02<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Física</span>)</span>
+<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a>dados_negligencia_02 <span class="op">=</span> tab_02<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Negligência</span>)</span>
+<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a>dados_outras_02 <span class="op">=</span> tab_02<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Outras</span>)</span>
+<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a>dados_psico_02 <span class="op">=</span> tab_02<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Psicológica</span>)</span>
+<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a>dados_sexual_02 <span class="op">=</span> tab_02<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Sexual</span>)</span>
+<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a>dados_tortura_02 <span class="op">=</span> tab_02<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">Tortura</span>)</span>
+<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a>traces_tab_02 <span class="op">=</span> () <span class="kw">=&gt;</span> [</span>
+<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a>  { </span>
+<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> idade_02<span class="op">,</span> </span>
+<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> dados_fisica_02<span class="op">,</span> </span>
+<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mode</span><span class="op">:</span> <span class="st">"lines"</span><span class="op">,</span> </span>
+<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a>    <span class="dt">name</span><span class="op">:</span> <span class="vs">`Física`</span> <span class="op">,</span></span>
+<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a>    <span class="dt">line</span><span class="op">:</span> {<span class="dt">color</span><span class="op">:</span> <span class="st">'#66C2A5'</span>}</span>
+<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a>  { </span>
+<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> idade_02<span class="op">,</span> </span>
+<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> dados_negligencia_02<span class="op">,</span> </span>
+<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mode</span><span class="op">:</span> <span class="st">"lines"</span><span class="op">,</span> </span>
+<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a>    <span class="dt">name</span><span class="op">:</span> <span class="vs">`Negligência`</span><span class="op">,</span></span>
+<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a>    <span class="dt">line</span><span class="op">:</span> {<span class="dt">color</span><span class="op">:</span> <span class="st">'#FC8D62'</span>} </span>
+<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a>  { </span>
+<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> idade_02<span class="op">,</span> </span>
+<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> dados_outras_02<span class="op">,</span> </span>
+<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mode</span><span class="op">:</span> <span class="st">"lines"</span><span class="op">,</span> </span>
+<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a>    <span class="dt">name</span><span class="op">:</span> <span class="vs">`Outras`</span><span class="op">,</span></span>
+<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a>    <span class="dt">line</span><span class="op">:</span> {<span class="dt">color</span><span class="op">:</span> <span class="st">'#8DA0CB'</span>} </span>
+<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a>  { </span>
+<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> idade_02<span class="op">,</span> </span>
+<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> dados_psico_02<span class="op">,</span> </span>
+<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mode</span><span class="op">:</span> <span class="st">"lines"</span><span class="op">,</span> </span>
+<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a>    <span class="dt">name</span><span class="op">:</span> <span class="vs">`Psicológica`</span><span class="op">,</span></span>
+<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a>    <span class="dt">line</span><span class="op">:</span> {<span class="dt">color</span><span class="op">:</span> <span class="st">'#E78AC3'</span>} </span>
+<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a>  { </span>
+<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> idade_02<span class="op">,</span> </span>
+<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> dados_sexual_02<span class="op">,</span> </span>
+<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mode</span><span class="op">:</span> <span class="st">"lines"</span><span class="op">,</span> </span>
+<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a>    <span class="dt">name</span><span class="op">:</span> <span class="vs">`Sexual`</span><span class="op">,</span></span>
+<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a>    <span class="dt">line</span><span class="op">:</span> {<span class="dt">color</span><span class="op">:</span> <span class="st">'#A6D854'</span>} </span>
+<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb3-242"><a href="#cb3-242" aria-hidden="true" tabindex="-1"></a>  { </span>
+<span id="cb3-243"><a href="#cb3-243" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> idade_02<span class="op">,</span> </span>
+<span id="cb3-244"><a href="#cb3-244" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> dados_tortura_02<span class="op">,</span> </span>
+<span id="cb3-245"><a href="#cb3-245" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mode</span><span class="op">:</span> <span class="st">"lines"</span><span class="op">,</span> </span>
+<span id="cb3-246"><a href="#cb3-246" aria-hidden="true" tabindex="-1"></a>    <span class="dt">name</span><span class="op">:</span> <span class="vs">`Tortura`</span><span class="op">,</span></span>
+<span id="cb3-247"><a href="#cb3-247" aria-hidden="true" tabindex="-1"></a>    <span class="dt">line</span><span class="op">:</span> {<span class="dt">color</span><span class="op">:</span> <span class="st">'#E5C494'</span>} </span>
+<span id="cb3-248"><a href="#cb3-248" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-249"><a href="#cb3-249" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-250"><a href="#cb3-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-251"><a href="#cb3-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-252"><a href="#cb3-252" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb3-253"><a href="#cb3-253" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> div <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;div style="width:100%;height:500px;"&gt;&lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb3-254"><a href="#cb3-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-255"><a href="#cb3-255" aria-hidden="true" tabindex="-1"></a> <span class="kw">const</span> layout <span class="op">=</span> {</span>
+<span id="cb3-256"><a href="#cb3-256" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> {</span>
+<span id="cb3-257"><a href="#cb3-257" aria-hidden="true" tabindex="-1"></a>      <span class="dt">text</span><span class="op">:</span> <span class="st">"Violências por idade e tipo"</span><span class="op">,</span></span>
+<span id="cb3-258"><a href="#cb3-258" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="fl">0.5</span><span class="op">,</span></span>
+<span id="cb3-259"><a href="#cb3-259" aria-hidden="true" tabindex="-1"></a>      <span class="dt">xanchor</span><span class="op">:</span> <span class="st">'center'</span></span>
+<span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a>    <span class="dt">xaxis</span><span class="op">:</span> { <span class="dt">title</span><span class="op">:</span> <span class="st">"Idade da vítima"</span> }<span class="op">,</span></span>
+<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>    <span class="dt">yaxis</span><span class="op">:</span> { <span class="dt">title</span><span class="op">:</span> <span class="st">"Número de casos"</span> }<span class="op">,</span></span>
+<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a>    <span class="dt">margin</span><span class="op">:</span> { <span class="dt">t</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span> <span class="dv">150</span> }<span class="op">,</span> <span class="co">// margem direita para os botões</span></span>
+<span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a>    <span class="dt">legend</span><span class="op">:</span> { <span class="dt">title</span><span class="op">:</span> { <span class="dt">text</span><span class="op">:</span> <span class="st">"Clique para ocultar/exibir"</span> } }<span class="op">,</span></span>
+<span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a>    <span class="dt">updatemenus</span><span class="op">:</span> [{</span>
+<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>      <span class="dt">type</span><span class="op">:</span> <span class="st">"buttons"</span><span class="op">,</span></span>
+<span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a>      <span class="dt">direction</span><span class="op">:</span> <span class="st">"left"</span><span class="op">,</span></span>
+<span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="fl">1.02</span><span class="op">,</span></span>
+<span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a>      <span class="dt">xanchor</span><span class="op">:</span> <span class="st">"left"</span><span class="op">,</span></span>
+<span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="fl">0.5</span><span class="op">,</span></span>
+<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a>      <span class="dt">yanchor</span><span class="op">:</span> <span class="st">"middle"</span><span class="op">,</span></span>
+<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a>      <span class="dt">buttons</span><span class="op">:</span> [</span>
+<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a>          <span class="dt">method</span><span class="op">:</span> <span class="st">"restyle"</span><span class="op">,</span></span>
+<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a>          <span class="dt">args</span><span class="op">:</span> [{<span class="st">"visible"</span><span class="op">:</span> [<span class="kw">true</span><span class="op">,</span> <span class="kw">true</span><span class="op">,</span> <span class="kw">true</span><span class="op">,</span> <span class="kw">true</span><span class="op">,</span> <span class="kw">true</span><span class="op">,</span> <span class="kw">true</span>]}]<span class="op">,</span></span>
+<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>          <span class="dt">label</span><span class="op">:</span> <span class="st">"Mostrar Todos"</span></span>
+<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a>          <span class="dt">method</span><span class="op">:</span> <span class="st">"restyle"</span><span class="op">,</span> </span>
+<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a>          <span class="dt">args</span><span class="op">:</span> [{<span class="st">"visible"</span><span class="op">:</span> [<span class="st">"legendonly"</span><span class="op">,</span> <span class="st">"legendonly"</span><span class="op">,</span> <span class="st">"legendonly"</span><span class="op">,</span> <span class="st">"legendonly"</span><span class="op">,</span> <span class="st">"legendonly"</span><span class="op">,</span> <span class="st">"legendonly"</span>]}]<span class="op">,</span></span>
+<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a>          <span class="dt">label</span><span class="op">:</span> <span class="st">"Apagar Todos"</span></span>
+<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>      ]</span>
+<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a>    }]</span>
+<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Renderiza o gráfico inicial</span></span>
+<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>  Plotly<span class="op">.</span><span class="fu">newPlot</span>(div<span class="op">,</span> <span class="fu">traces_tab_02</span>()<span class="op">,</span> layout)<span class="op">;</span></span>
+<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Esta linha mágica garante que o gráfico antigo seja removido</span></span>
+<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a>  <span class="co">// antes de um novo ser desenhado quando os sliders mudam.</span></span>
+<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a>  invalidation<span class="op">.</span><span class="fu">then</span>(() <span class="kw">=&gt;</span> Plotly<span class="op">.</span><span class="fu">purge</span>(div))<span class="op">;</span></span>
+<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Retorna o elemento div para ser exibido na página</span></span>
+<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> div<span class="op">;</span></span>
+<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-10" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-11" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="outros" class="level2">
+<h2 class="anchored" data-anchor-id="outros">Outros</h2>
 <p>Aqui está o gráfico que ilustra as ocorrências de violência:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -446,7 +630,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </main>
 <!-- /main column -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIENvbnRyb2xlcyByZWF0aXZvcyBkbyBPYnNlcnZhYmxlXHJcbmltcG9ydCB7IElucHV0cyB9IGZyb20gXCJAb2JzZXJ2YWJsZWhxL2lucHV0c1wiXHJcblxyXG4vLyBDYXJyZWdhIGEgYmlibGlvdGVjYSBQbG90bHkuanMgZGUgZm9ybWEgcm9idXN0YVxyXG5QbG90bHkgPSByZXF1aXJlKFwicGxvdGx5LmpzLWRpc3RAMi4yNy4wXCIpXHJcblxyXG4vLyBDYXJyZWdhIG8gYXJxdWl2byBDU1YgbG9jYWxcclxucG9wdWxhY2FvID0gRmlsZUF0dGFjaG1lbnQoXCJkYWRvc19wb3B1bGFjYW8uY3N2XCIpLmNzdih7IHR5cGVkOiB0cnVlIH0pXHJcblxyXG4vLyBFeHRyYWkgYXMgY29sdW5hcyBwYXJhIGFycmF5cyBzZXBhcmFkb3MgcGFyYSBmYWNpbGl0YXIgbyB1c29cclxuaWRhZGUgPSBwb3B1bGFjYW8ubWFwKGQgPT4gZC5pZGFkZSlcclxuZGFkb3NfZmVtaW5pbm8gPSBwb3B1bGFjYW8ubWFwKGQgPT4gZC5mZW1pbmlubylcclxuZGFkb3NfbWFzY3VsaW5vID0gcG9wdWxhY2FvLm1hcChkID0+IGQubWFzY3VsaW5vKVxyXG5cclxuXHJcbnRyYWNlcyA9ICgpID0+IFtcclxuICB7IFxyXG4gICAgeDogaWRhZGUsIFxyXG4gICAgeTogZGFkb3NfZmVtaW5pbm8sIFxyXG4gICAgbW9kZTogXCJsaW5lc1wiLCBcclxuICAgIG5hbWU6IGBGZW1pbmlub2AgLFxyXG4gICAgbGluZToge2NvbG9yOiAnIzY2QzJBNSd9XHJcbiAgfSxcclxuICB7IFxyXG4gICAgeDogaWRhZGUsIFxyXG4gICAgeTogZGFkb3NfbWFzY3VsaW5vLCBcclxuICAgIG1vZGU6IFwibGluZXNcIiwgXHJcbiAgICBuYW1lOiBgTWFzY3VsaW5vYCxcclxuICAgIGxpbmU6IHtjb2xvcjogJyNGQzhENjInfSBcclxuICB9XHJcbl1cclxuXHJcblxyXG57XHJcbiAgY29uc3QgZGl2ID0gaHRtbGA8ZGl2IHN0eWxlPVwid2lkdGg6MTAwJTtoZWlnaHQ6NTAwcHg7XCI+PC9kaXY+YDtcclxuXHJcbiAgLy8gRGVmaW5lIG8gbGF5b3V0LCBpbmNsdWluZG8gb3MgdMOtdHVsb3MgZG9zIGVpeG9zXHJcbiAgY29uc3QgbGF5b3V0ID0ge1xyXG4gICAgeGF4aXM6IHsgdGl0bGU6IFwiSWRhZGVcIiB9LFxyXG4gICAgeWF4aXM6IHsgdGl0bGU6IFwiUG9wdWxhw6fDo29cIiB9LFxyXG4gICAgbWFyZ2luOiB7IHQ6IDIwIH0sXHJcbiAgICBsZWdlbmQ6IHsgdGl0bGU6IHsgdGV4dDogXCJDbGlxdWUgcGFyYSBvY3VsdGFyL2V4aWJpclwiIH0gfVxyXG4gIH07XHJcblxyXG4gIC8vIFJlbmRlcml6YSBvIGdyw6FmaWNvIGluaWNpYWxcclxuICBQbG90bHkubmV3UGxvdChkaXYsIHRyYWNlcygpLCBsYXlvdXQpO1xyXG5cclxuICAvLyBFc3RhIGxpbmhhIG3DoWdpY2EgZ2FyYW50ZSBxdWUgbyBncsOhZmljbyBhbnRpZ28gc2VqYSByZW1vdmlkb1xyXG4gIC8vIGFudGVzIGRlIHVtIG5vdm8gc2VyIGRlc2VuaGFkbyBxdWFuZG8gb3Mgc2xpZGVycyBtdWRhbS5cclxuICBpbnZhbGlkYXRpb24udGhlbigoKSA9PiBQbG90bHkucHVyZ2UoZGl2KSk7XHJcblxyXG4gIC8vIFJldG9ybmEgbyBlbGVtZW50byBkaXYgcGFyYSBzZXIgZXhpYmlkbyBuYSBww6FnaW5hXHJcbiAgcmV0dXJuIGRpdjtcclxufVxyXG5cclxuXHJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIENvbnRyb2xlcyByZWF0aXZvcyBkbyBPYnNlcnZhYmxlXHJcbmltcG9ydCB7IElucHV0cyB9IGZyb20gXCJAb2JzZXJ2YWJsZWhxL2lucHV0c1wiXHJcblxyXG5cclxuLy8gQ2FycmVnYSBvIGFycXVpdm8gQ1NWIGxvY2FsXHJcbnRhYl8wMSA9IEZpbGVBdHRhY2htZW50KFwiY3N2L3RhYl8wMS5jc3ZcIikuY3N2KHsgdHlwZWQ6IHRydWUgfSlcclxuXHJcbi8vIEV4dHJhaSBhcyBjb2x1bmFzIHBhcmEgYXJyYXlzIHNlcGFyYWRvcyBwYXJhIGZhY2lsaXRhciBvIHVzb1xyXG5kYXRhID0gdGFiXzAxLm1hcChkID0+IGQuZGF0YSlcclxuZGFkb3NfZmlzaWNhID0gdGFiXzAxLm1hcChkID0+IGQuRsOtc2ljYSlcclxuZGFkb3NfbmVnbGlnZW5jaWEgPSB0YWJfMDEubWFwKGQgPT4gZC5OZWdsaWfDqm5jaWEpXHJcbmRhZG9zX291dHJhcyA9IHRhYl8wMS5tYXAoZCA9PiBkLk91dHJhcylcclxuZGFkb3NfcHNpY28gPSB0YWJfMDEubWFwKGQgPT4gZC5Qc2ljb2zDs2dpY2EpXHJcbmRhZG9zX3NleHVhbCA9IHRhYl8wMS5tYXAoZCA9PiBkLlNleHVhbClcclxuZGFkb3NfdG9ydHVyYSA9IHRhYl8wMS5tYXAoZCA9PiBkLlRvcnR1cmEpXHJcblxyXG5cclxudHJhY2VzX3RhYl8wMSA9ICgpID0+IFtcclxuICB7IFxyXG4gICAgeDogZGF0YSwgXHJcbiAgICB5OiBkYWRvc19maXNpY2EsIFxyXG4gICAgbW9kZTogXCJsaW5lc1wiLCBcclxuICAgIG5hbWU6IGBGw61zaWNhYCAsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjNjZDMkE1J31cclxuICB9LFxyXG4gIHsgXHJcbiAgICB4OiBkYXRhLCBcclxuICAgIHk6IGRhZG9zX25lZ2xpZ2VuY2lhLCBcclxuICAgIG1vZGU6IFwibGluZXNcIiwgXHJcbiAgICBuYW1lOiBgTmVnbGlnw6puY2lhYCxcclxuICAgIGxpbmU6IHtjb2xvcjogJyNGQzhENjInfSBcclxuICB9LFxyXG4gIHsgXHJcbiAgICB4OiBkYXRhLCBcclxuICAgIHk6IGRhZG9zX291dHJhcywgXHJcbiAgICBtb2RlOiBcImxpbmVzXCIsIFxyXG4gICAgbmFtZTogYE91dHJhc2AsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjOERBMENCJ30gXHJcbiAgfSxcclxuICB7IFxyXG4gICAgeDogZGF0YSwgXHJcbiAgICB5OiBkYWRvc19wc2ljbywgXHJcbiAgICBtb2RlOiBcImxpbmVzXCIsIFxyXG4gICAgbmFtZTogYFBzaWNvbMOzZ2ljYWAsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjRTc4QUMzJ30gXHJcbiAgfSxcclxuICB7IFxyXG4gICAgeDogZGF0YSwgXHJcbiAgICB5OiBkYWRvc19zZXh1YWwsIFxyXG4gICAgbW9kZTogXCJsaW5lc1wiLCBcclxuICAgIG5hbWU6IGBTZXh1YWxgLFxyXG4gICAgbGluZToge2NvbG9yOiAnI0E2RDg1NCd9IFxyXG4gIH0sXHJcbiAgeyBcclxuICAgIHg6IGRhdGEsIFxyXG4gICAgeTogZGFkb3NfdG9ydHVyYSwgXHJcbiAgICBtb2RlOiBcImxpbmVzXCIsIFxyXG4gICAgbmFtZTogYFRvcnR1cmFgLFxyXG4gICAgbGluZToge2NvbG9yOiAnI0U1QzQ5NCd9IFxyXG4gIH1cclxuXVxyXG5cclxuXHJcbntcclxuICBjb25zdCBkaXYgPSBodG1sYDxkaXYgc3R5bGU9XCJ3aWR0aDoxMDAlO2hlaWdodDo1MDBweDtcIj48L2Rpdj5gO1xyXG5cclxuIGNvbnN0IGxheW91dCA9IHtcclxuICB0aXRsZToge1xyXG4gICAgdGV4dDogXCJUw610dWxvIGRvIFNldSBHcsOhZmljb1wiLFxyXG4gICAgeDogMC41LCAvLyBjZW50cmFsaXphIG8gdMOtdHVsb1xyXG4gICAgeGFuY2hvcjogJ2NlbnRlcidcclxuICB9LFxyXG4gIHhheGlzOiB7IHRpdGxlOiBcIkRhdGEgZGUgb2NvcnLDqm5jaWFcIiB9LFxyXG4gIHlheGlzOiB7IHRpdGxlOiBcIk7Dum1lcm8gZGUgY2Fzb3NcIiB9LFxyXG4gIG1hcmdpbjogeyB0OiA1MCB9LCAvLyBhdW1lbnRlaSBhIG1hcmdlbSBzdXBlcmlvciBwYXJhIGFjb21vZGFyIG8gdMOtdHVsb1xyXG4gIGxlZ2VuZDogeyB0aXRsZTogeyB0ZXh0OiBcIkNsaXF1ZSBwYXJhIG9jdWx0YXIvZXhpYmlyXCIgfSB9XHJcbn07XHJcbiAgLy8gUmVuZGVyaXphIG8gZ3LDoWZpY28gaW5pY2lhbFxyXG4gIFBsb3RseS5uZXdQbG90KGRpdiwgdHJhY2VzX3RhYl8wMSgpLCBsYXlvdXQpO1xyXG5cclxuICAvLyBFc3RhIGxpbmhhIG3DoWdpY2EgZ2FyYW50ZSBxdWUgbyBncsOhZmljbyBhbnRpZ28gc2VqYSByZW1vdmlkb1xyXG4gIC8vIGFudGVzIGRlIHVtIG5vdm8gc2VyIGRlc2VuaGFkbyBxdWFuZG8gb3Mgc2xpZGVycyBtdWRhbS5cclxuICBpbnZhbGlkYXRpb24udGhlbigoKSA9PiBQbG90bHkucHVyZ2UoZGl2KSk7XHJcblxyXG4gIC8vIFJldG9ybmEgbyBlbGVtZW50byBkaXYgcGFyYSBzZXIgZXhpYmlkbyBuYSBww6FnaW5hXHJcbiAgcmV0dXJuIGRpdjtcclxufVxyXG5cclxuXHJcbiJ9XX0=
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIENvbnRyb2xlcyByZWF0aXZvcyBkbyBPYnNlcnZhYmxlXHJcbmltcG9ydCB7IElucHV0cyB9IGZyb20gXCJAb2JzZXJ2YWJsZWhxL2lucHV0c1wiXHJcblxyXG4vLyBDYXJyZWdhIGEgYmlibGlvdGVjYSBQbG90bHkuanMgZGUgZm9ybWEgcm9idXN0YVxyXG5QbG90bHkgPSByZXF1aXJlKFwicGxvdGx5LmpzLWRpc3RAMi4yNy4wXCIpXHJcblxyXG4vLyBDYXJyZWdhIG8gYXJxdWl2byBDU1YgbG9jYWxcclxucG9wdWxhY2FvID0gRmlsZUF0dGFjaG1lbnQoXCJkYWRvc19wb3B1bGFjYW8uY3N2XCIpLmNzdih7IHR5cGVkOiB0cnVlIH0pXHJcblxyXG4vLyBFeHRyYWkgYXMgY29sdW5hcyBwYXJhIGFycmF5cyBzZXBhcmFkb3MgcGFyYSBmYWNpbGl0YXIgbyB1c29cclxuaWRhZGUgPSBwb3B1bGFjYW8ubWFwKGQgPT4gZC5pZGFkZSlcclxuZGFkb3NfZmVtaW5pbm8gPSBwb3B1bGFjYW8ubWFwKGQgPT4gZC5mZW1pbmlubylcclxuZGFkb3NfbWFzY3VsaW5vID0gcG9wdWxhY2FvLm1hcChkID0+IGQubWFzY3VsaW5vKVxyXG5cclxuXHJcbnRyYWNlcyA9ICgpID0+IFtcclxuICB7IFxyXG4gICAgeDogaWRhZGUsIFxyXG4gICAgeTogZGFkb3NfZmVtaW5pbm8sIFxyXG4gICAgbW9kZTogXCJsaW5lc1wiLCBcclxuICAgIG5hbWU6IGBGZW1pbmlub2AgLFxyXG4gICAgbGluZToge2NvbG9yOiAnIzY2QzJBNSd9XHJcbiAgfSxcclxuICB7IFxyXG4gICAgeDogaWRhZGUsIFxyXG4gICAgeTogZGFkb3NfbWFzY3VsaW5vLCBcclxuICAgIG1vZGU6IFwibGluZXNcIiwgXHJcbiAgICBuYW1lOiBgTWFzY3VsaW5vYCxcclxuICAgIGxpbmU6IHtjb2xvcjogJyNGQzhENjInfSBcclxuICB9XHJcbl1cclxuXHJcblxyXG57XHJcbiAgY29uc3QgZGl2ID0gaHRtbGA8ZGl2IHN0eWxlPVwid2lkdGg6MTAwJTtoZWlnaHQ6NTAwcHg7XCI+PC9kaXY+YDtcclxuXHJcbiAgLy8gRGVmaW5lIG8gbGF5b3V0LCBpbmNsdWluZG8gb3MgdMOtdHVsb3MgZG9zIGVpeG9zXHJcbiAgY29uc3QgbGF5b3V0ID0ge1xyXG4gICAgeGF4aXM6IHsgdGl0bGU6IFwiSWRhZGVcIiB9LFxyXG4gICAgeWF4aXM6IHsgdGl0bGU6IFwiUG9wdWxhw6fDo29cIiB9LFxyXG4gICAgbWFyZ2luOiB7IHQ6IDIwIH0sXHJcbiAgICBsZWdlbmQ6IHsgdGl0bGU6IHsgdGV4dDogXCJDbGlxdWUgcGFyYSBvY3VsdGFyL2V4aWJpclwiIH0gfVxyXG4gIH07XHJcblxyXG4gIC8vIFJlbmRlcml6YSBvIGdyw6FmaWNvIGluaWNpYWxcclxuICBQbG90bHkubmV3UGxvdChkaXYsIHRyYWNlcygpLCBsYXlvdXQpO1xyXG5cclxuICAvLyBFc3RhIGxpbmhhIG3DoWdpY2EgZ2FyYW50ZSBxdWUgbyBncsOhZmljbyBhbnRpZ28gc2VqYSByZW1vdmlkb1xyXG4gIC8vIGFudGVzIGRlIHVtIG5vdm8gc2VyIGRlc2VuaGFkbyBxdWFuZG8gb3Mgc2xpZGVycyBtdWRhbS5cclxuICBpbnZhbGlkYXRpb24udGhlbigoKSA9PiBQbG90bHkucHVyZ2UoZGl2KSk7XHJcblxyXG4gIC8vIFJldG9ybmEgbyBlbGVtZW50byBkaXYgcGFyYSBzZXIgZXhpYmlkbyBuYSBww6FnaW5hXHJcbiAgcmV0dXJuIGRpdjtcclxufVxyXG5cclxuXHJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIENvbnRyb2xlcyByZWF0aXZvcyBkbyBPYnNlcnZhYmxlXHJcbmltcG9ydCB7IElucHV0cyB9IGZyb20gXCJAb2JzZXJ2YWJsZWhxL2lucHV0c1wiXHJcblxyXG5cclxuLy8gQ2FycmVnYSBvIGFycXVpdm8gQ1NWIGxvY2FsXHJcbnRhYl8wMSA9IEZpbGVBdHRhY2htZW50KFwiY3N2L3RhYl8wMS5jc3ZcIikuY3N2KHsgdHlwZWQ6IHRydWUgfSlcclxuXHJcbi8vIEV4dHJhaSBhcyBjb2x1bmFzIHBhcmEgYXJyYXlzIHNlcGFyYWRvcyBwYXJhIGZhY2lsaXRhciBvIHVzb1xyXG5kYXRhID0gdGFiXzAxLm1hcChkID0+IGQuZGF0YSlcclxuZGFkb3NfZmlzaWNhID0gdGFiXzAxLm1hcChkID0+IGQuRsOtc2ljYSlcclxuZGFkb3NfbmVnbGlnZW5jaWEgPSB0YWJfMDEubWFwKGQgPT4gZC5OZWdsaWfDqm5jaWEpXHJcbmRhZG9zX291dHJhcyA9IHRhYl8wMS5tYXAoZCA9PiBkLk91dHJhcylcclxuZGFkb3NfcHNpY28gPSB0YWJfMDEubWFwKGQgPT4gZC5Qc2ljb2zDs2dpY2EpXHJcbmRhZG9zX3NleHVhbCA9IHRhYl8wMS5tYXAoZCA9PiBkLlNleHVhbClcclxuZGFkb3NfdG9ydHVyYSA9IHRhYl8wMS5tYXAoZCA9PiBkLlRvcnR1cmEpXHJcblxyXG5cclxudHJhY2VzX3RhYl8wMSA9ICgpID0+IFtcclxuICB7IFxyXG4gICAgeDogZGF0YSwgXHJcbiAgICB5OiBkYWRvc19maXNpY2EsIFxyXG4gICAgbW9kZTogXCJsaW5lc1wiLCBcclxuICAgIG5hbWU6IGBGw61zaWNhYCAsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjNjZDMkE1J31cclxuICB9LFxyXG4gIHsgXHJcbiAgICB4OiBkYXRhLCBcclxuICAgIHk6IGRhZG9zX25lZ2xpZ2VuY2lhLCBcclxuICAgIG1vZGU6IFwibGluZXNcIiwgXHJcbiAgICBuYW1lOiBgTmVnbGlnw6puY2lhYCxcclxuICAgIGxpbmU6IHtjb2xvcjogJyNGQzhENjInfSBcclxuICB9LFxyXG4gIHsgXHJcbiAgICB4OiBkYXRhLCBcclxuICAgIHk6IGRhZG9zX291dHJhcywgXHJcbiAgICBtb2RlOiBcImxpbmVzXCIsIFxyXG4gICAgbmFtZTogYE91dHJhc2AsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjOERBMENCJ30gXHJcbiAgfSxcclxuICB7IFxyXG4gICAgeDogZGF0YSwgXHJcbiAgICB5OiBkYWRvc19wc2ljbywgXHJcbiAgICBtb2RlOiBcImxpbmVzXCIsIFxyXG4gICAgbmFtZTogYFBzaWNvbMOzZ2ljYWAsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjRTc4QUMzJ30gXHJcbiAgfSxcclxuICB7IFxyXG4gICAgeDogZGF0YSwgXHJcbiAgICB5OiBkYWRvc19zZXh1YWwsIFxyXG4gICAgbW9kZTogXCJsaW5lc1wiLCBcclxuICAgIG5hbWU6IGBTZXh1YWxgLFxyXG4gICAgbGluZToge2NvbG9yOiAnI0E2RDg1NCd9IFxyXG4gIH0sXHJcbiAgeyBcclxuICAgIHg6IGRhdGEsIFxyXG4gICAgeTogZGFkb3NfdG9ydHVyYSwgXHJcbiAgICBtb2RlOiBcImxpbmVzXCIsIFxyXG4gICAgbmFtZTogYFRvcnR1cmFgLFxyXG4gICAgbGluZToge2NvbG9yOiAnI0U1QzQ5NCd9IFxyXG4gIH1cclxuXVxyXG5cclxuXHJcbntcclxuICBjb25zdCBkaXYgPSBodG1sYDxkaXYgc3R5bGU9XCJ3aWR0aDoxMDAlO2hlaWdodDo1MDBweDtcIj48L2Rpdj5gO1xyXG5cclxuIGNvbnN0IGxheW91dCA9IHtcclxuICB0aXRsZToge1xyXG4gICAgdGV4dDogXCJUw610dWxvIGRvIFNldSBHcsOhZmljb1wiLFxyXG4gICAgeDogMC41LCAvLyBjZW50cmFsaXphIG8gdMOtdHVsb1xyXG4gICAgeGFuY2hvcjogJ2NlbnRlcidcclxuICB9LFxyXG4gIHhheGlzOiB7IHRpdGxlOiBcIkRhdGEgZGUgb2NvcnLDqm5jaWFcIiB9LFxyXG4gIHlheGlzOiB7IHRpdGxlOiBcIk7Dum1lcm8gZGUgY2Fzb3NcIiB9LFxyXG4gIG1hcmdpbjogeyB0OiA1MCB9LCAvLyBhdW1lbnRlaSBhIG1hcmdlbSBzdXBlcmlvciBwYXJhIGFjb21vZGFyIG8gdMOtdHVsb1xyXG4gIGxlZ2VuZDogeyB0aXRsZTogeyB0ZXh0OiBcIkNsaXF1ZSBwYXJhIG9jdWx0YXIvZXhpYmlyXCIgfSB9XHJcbn07XHJcbiAgLy8gUmVuZGVyaXphIG8gZ3LDoWZpY28gaW5pY2lhbFxyXG4gIFBsb3RseS5uZXdQbG90KGRpdiwgdHJhY2VzX3RhYl8wMSgpLCBsYXlvdXQpO1xyXG5cclxuICAvLyBFc3RhIGxpbmhhIG3DoWdpY2EgZ2FyYW50ZSBxdWUgbyBncsOhZmljbyBhbnRpZ28gc2VqYSByZW1vdmlkb1xyXG4gIC8vIGFudGVzIGRlIHVtIG5vdm8gc2VyIGRlc2VuaGFkbyBxdWFuZG8gb3Mgc2xpZGVycyBtdWRhbS5cclxuICBpbnZhbGlkYXRpb24udGhlbigoKSA9PiBQbG90bHkucHVyZ2UoZGl2KSk7XHJcblxyXG4gIC8vIFJldG9ybmEgbyBlbGVtZW50byBkaXYgcGFyYSBzZXIgZXhpYmlkbyBuYSBww6FnaW5hXHJcbiAgcmV0dXJuIGRpdjtcclxufVxyXG5cclxuXHJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIENvbnRyb2xlcyByZWF0aXZvcyBkbyBPYnNlcnZhYmxlXHJcbmltcG9ydCB7IElucHV0cyB9IGZyb20gXCJAb2JzZXJ2YWJsZWhxL2lucHV0c1wiXHJcblxyXG5cclxuLy8gQ2FycmVnYSBvIGFycXVpdm8gQ1NWIGxvY2FsXHJcbnRhYl8wMiA9IEZpbGVBdHRhY2htZW50KFwiY3N2L3RhYl8wMi5jc3ZcIikuY3N2KHsgdHlwZWQ6IHRydWUgfSlcclxuXHJcbi8vIEV4dHJhaSBhcyBjb2x1bmFzIHBhcmEgYXJyYXlzIHNlcGFyYWRvcyBwYXJhIGZhY2lsaXRhciBvIHVzb1xyXG5pZGFkZV8wMiA9IHRhYl8wMi5tYXAoZCA9PiBkLmlkYWRlKVxyXG5kYWRvc19maXNpY2FfMDIgPSB0YWJfMDIubWFwKGQgPT4gZC5Gw61zaWNhKVxyXG5kYWRvc19uZWdsaWdlbmNpYV8wMiA9IHRhYl8wMi5tYXAoZCA9PiBkLk5lZ2xpZ8OqbmNpYSlcclxuZGFkb3Nfb3V0cmFzXzAyID0gdGFiXzAyLm1hcChkID0+IGQuT3V0cmFzKVxyXG5kYWRvc19wc2ljb18wMiA9IHRhYl8wMi5tYXAoZCA9PiBkLlBzaWNvbMOzZ2ljYSlcclxuZGFkb3Nfc2V4dWFsXzAyID0gdGFiXzAyLm1hcChkID0+IGQuU2V4dWFsKVxyXG5kYWRvc190b3J0dXJhXzAyID0gdGFiXzAyLm1hcChkID0+IGQuVG9ydHVyYSlcclxuXHJcblxyXG50cmFjZXNfdGFiXzAyID0gKCkgPT4gW1xyXG4gIHsgXHJcbiAgICB4OiBpZGFkZV8wMiwgXHJcbiAgICB5OiBkYWRvc19maXNpY2FfMDIsIFxyXG4gICAgbW9kZTogXCJsaW5lc1wiLCBcclxuICAgIG5hbWU6IGBGw61zaWNhYCAsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjNjZDMkE1J31cclxuICB9LFxyXG4gIHsgXHJcbiAgICB4OiBpZGFkZV8wMiwgXHJcbiAgICB5OiBkYWRvc19uZWdsaWdlbmNpYV8wMiwgXHJcbiAgICBtb2RlOiBcImxpbmVzXCIsIFxyXG4gICAgbmFtZTogYE5lZ2xpZ8OqbmNpYWAsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjRkM4RDYyJ30gXHJcbiAgfSxcclxuICB7IFxyXG4gICAgeDogaWRhZGVfMDIsIFxyXG4gICAgeTogZGFkb3Nfb3V0cmFzXzAyLCBcclxuICAgIG1vZGU6IFwibGluZXNcIiwgXHJcbiAgICBuYW1lOiBgT3V0cmFzYCxcclxuICAgIGxpbmU6IHtjb2xvcjogJyM4REEwQ0InfSBcclxuICB9LFxyXG4gIHsgXHJcbiAgICB4OiBpZGFkZV8wMiwgXHJcbiAgICB5OiBkYWRvc19wc2ljb18wMiwgXHJcbiAgICBtb2RlOiBcImxpbmVzXCIsIFxyXG4gICAgbmFtZTogYFBzaWNvbMOzZ2ljYWAsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjRTc4QUMzJ30gXHJcbiAgfSxcclxuICB7IFxyXG4gICAgeDogaWRhZGVfMDIsIFxyXG4gICAgeTogZGFkb3Nfc2V4dWFsXzAyLCBcclxuICAgIG1vZGU6IFwibGluZXNcIiwgXHJcbiAgICBuYW1lOiBgU2V4dWFsYCxcclxuICAgIGxpbmU6IHtjb2xvcjogJyNBNkQ4NTQnfSBcclxuICB9LFxyXG4gIHsgXHJcbiAgICB4OiBpZGFkZV8wMiwgXHJcbiAgICB5OiBkYWRvc190b3J0dXJhXzAyLCBcclxuICAgIG1vZGU6IFwibGluZXNcIiwgXHJcbiAgICBuYW1lOiBgVG9ydHVyYWAsXHJcbiAgICBsaW5lOiB7Y29sb3I6ICcjRTVDNDk0J30gXHJcbiAgfVxyXG5dXHJcblxyXG5cclxue1xyXG4gIGNvbnN0IGRpdiA9IGh0bWxgPGRpdiBzdHlsZT1cIndpZHRoOjEwMCU7aGVpZ2h0OjUwMHB4O1wiPjwvZGl2PmA7XHJcblxyXG4gY29uc3QgbGF5b3V0ID0ge1xyXG4gICAgdGl0bGU6IHtcclxuICAgICAgdGV4dDogXCJWaW9sw6puY2lhcyBwb3IgaWRhZGUgZSB0aXBvXCIsXHJcbiAgICAgIHg6IDAuNSxcclxuICAgICAgeGFuY2hvcjogJ2NlbnRlcidcclxuICAgIH0sXHJcbiAgICB4YXhpczogeyB0aXRsZTogXCJJZGFkZSBkYSB2w610aW1hXCIgfSxcclxuICAgIHlheGlzOiB7IHRpdGxlOiBcIk7Dum1lcm8gZGUgY2Fzb3NcIiB9LFxyXG4gICAgbWFyZ2luOiB7IHQ6IDUwLCByOiAxNTAgfSwgLy8gbWFyZ2VtIGRpcmVpdGEgcGFyYSBvcyBib3TDtWVzXHJcbiAgICBsZWdlbmQ6IHsgdGl0bGU6IHsgdGV4dDogXCJDbGlxdWUgcGFyYSBvY3VsdGFyL2V4aWJpclwiIH0gfSxcclxuICAgIHVwZGF0ZW1lbnVzOiBbe1xyXG4gICAgICB0eXBlOiBcImJ1dHRvbnNcIixcclxuICAgICAgZGlyZWN0aW9uOiBcImxlZnRcIixcclxuICAgICAgeDogMS4wMixcclxuICAgICAgeGFuY2hvcjogXCJsZWZ0XCIsXHJcbiAgICAgIHk6IDAuNSxcclxuICAgICAgeWFuY2hvcjogXCJtaWRkbGVcIixcclxuICAgICAgYnV0dG9uczogW1xyXG4gICAgICAgIHtcclxuICAgICAgICAgIG1ldGhvZDogXCJyZXN0eWxlXCIsXHJcbiAgICAgICAgICBhcmdzOiBbe1widmlzaWJsZVwiOiBbdHJ1ZSwgdHJ1ZSwgdHJ1ZSwgdHJ1ZSwgdHJ1ZSwgdHJ1ZV19XSxcclxuICAgICAgICAgIGxhYmVsOiBcIk1vc3RyYXIgVG9kb3NcIlxyXG4gICAgICAgIH0sXHJcbiAgICAgICAge1xyXG4gICAgICAgICAgbWV0aG9kOiBcInJlc3R5bGVcIiwgXHJcbiAgICAgICAgICBhcmdzOiBbe1widmlzaWJsZVwiOiBbXCJsZWdlbmRvbmx5XCIsIFwibGVnZW5kb25seVwiLCBcImxlZ2VuZG9ubHlcIiwgXCJsZWdlbmRvbmx5XCIsIFwibGVnZW5kb25seVwiLCBcImxlZ2VuZG9ubHlcIl19XSxcclxuICAgICAgICAgIGxhYmVsOiBcIkFwYWdhciBUb2Rvc1wiXHJcbiAgICAgICAgfVxyXG4gICAgICBdXHJcbiAgICB9XVxyXG4gIH07XHJcbiAgXHJcbiAgLy8gUmVuZGVyaXphIG8gZ3LDoWZpY28gaW5pY2lhbFxyXG4gIFBsb3RseS5uZXdQbG90KGRpdiwgdHJhY2VzX3RhYl8wMigpLCBsYXlvdXQpO1xyXG5cclxuICAvLyBFc3RhIGxpbmhhIG3DoWdpY2EgZ2FyYW50ZSBxdWUgbyBncsOhZmljbyBhbnRpZ28gc2VqYSByZW1vdmlkb1xyXG4gIC8vIGFudGVzIGRlIHVtIG5vdm8gc2VyIGRlc2VuaGFkbyBxdWFuZG8gb3Mgc2xpZGVycyBtdWRhbS5cclxuICBpbnZhbGlkYXRpb24udGhlbigoKSA9PiBQbG90bHkucHVyZ2UoZGl2KSk7XHJcblxyXG4gIC8vIFJldG9ybmEgbyBlbGVtZW50byBkaXYgcGFyYSBzZXIgZXhpYmlkbyBuYSBww6FnaW5hXHJcbiAgcmV0dXJuIGRpdjtcclxufVxyXG5cclxuXHJcbiJ9XX0=
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }

@@ -8,3 +8,7 @@ Avaliação SINAN_files/
 Avaliação SINAN.html
 *.svg
 sihsus_sp/
+*.html
+.Rhistory
+csv/
+.Rhistory

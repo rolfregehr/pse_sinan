@@ -183,17 +183,123 @@ traces_tab_01 = () => [
 As violências contidas em **'Outras'** são: _financeira,_ _trabalho infantil_, _violência policial_, _tráfico de seres humanos_.
 
 
-## Tipos de violência de 2015 a 2024
+## Por tipo e idade
 
-<iframe src="graf_tipo.html" width="100%" height="800" frameborder="0"></iframe>
-
-POSITRON
-
-Por idade 
-
-<iframe src="graf_tipo_idade.html" width="100%" height="800px" frameborder="0"></iframe>
+```{ojs}
+// Controles reativos do Observable
+import { Inputs } from "@observablehq/inputs"
 
 
+// Carrega o arquivo CSV local
+tab_02 = FileAttachment("csv/tab_02.csv").csv({ typed: true })
+
+// Extrai as colunas para arrays separados para facilitar o uso
+idade_02 = tab_02.map(d => d.idade)
+dados_fisica_02 = tab_02.map(d => d.Física)
+dados_negligencia_02 = tab_02.map(d => d.Negligência)
+dados_outras_02 = tab_02.map(d => d.Outras)
+dados_psico_02 = tab_02.map(d => d.Psicológica)
+dados_sexual_02 = tab_02.map(d => d.Sexual)
+dados_tortura_02 = tab_02.map(d => d.Tortura)
+
+
+traces_tab_02 = () => [
+  { 
+    x: idade_02, 
+    y: dados_fisica_02, 
+    mode: "lines", 
+    name: `Física` ,
+    line: {color: '#66C2A5'}
+  },
+  { 
+    x: idade_02, 
+    y: dados_negligencia_02, 
+    mode: "lines", 
+    name: `Negligência`,
+    line: {color: '#FC8D62'} 
+  },
+  { 
+    x: idade_02, 
+    y: dados_outras_02, 
+    mode: "lines", 
+    name: `Outras`,
+    line: {color: '#8DA0CB'} 
+  },
+  { 
+    x: idade_02, 
+    y: dados_psico_02, 
+    mode: "lines", 
+    name: `Psicológica`,
+    line: {color: '#E78AC3'} 
+  },
+  { 
+    x: idade_02, 
+    y: dados_sexual_02, 
+    mode: "lines", 
+    name: `Sexual`,
+    line: {color: '#A6D854'} 
+  },
+  { 
+    x: idade_02, 
+    y: dados_tortura_02, 
+    mode: "lines", 
+    name: `Tortura`,
+    line: {color: '#E5C494'} 
+  }
+]
+
+
+{
+  const div = html`<div style="width:100%;height:500px;"></div>`;
+
+ const layout = {
+    title: {
+      text: "Violências por idade e tipo",
+      x: 0.5,
+      xanchor: 'center'
+    },
+    xaxis: { title: "Idade da vítima" },
+    yaxis: { title: "Número de casos" },
+    margin: { t: 50, r: 150 }, // margem direita para os botões
+    legend: { title: { text: "Clique para ocultar/exibir" } },
+    updatemenus: [{
+      type: "buttons",
+      direction: "left",
+      x: 1.02,
+      xanchor: "left",
+      y: 0.5,
+      yanchor: "middle",
+      buttons: [
+        {
+          method: "restyle",
+          args: [{"visible": [true, true, true, true, true, true]}],
+          label: "Mostrar Todos"
+        },
+        {
+          method: "restyle", 
+          args: [{"visible": ["legendonly", "legendonly", "legendonly", "legendonly", "legendonly", "legendonly"]}],
+          label: "Apagar Todos"
+        }
+      ]
+    }]
+  };
+  
+  // Renderiza o gráfico inicial
+  Plotly.newPlot(div, traces_tab_02(), layout);
+
+  // Esta linha mágica garante que o gráfico antigo seja removido
+  // antes de um novo ser desenhado quando os sliders mudam.
+  invalidation.then(() => Plotly.purge(div));
+
+  // Retorna o elemento div para ser exibido na página
+  return div;
+}
+
+
+```
+
+
+## Outros
 
 Aqui está o gráfico que ilustra as ocorrências de violência:
 

@@ -478,3 +478,32 @@ sinan |>
 
 
 write.csv(tab_01, './csv/tab_01.csv')
+
+
+## Tabela 2 - por tipo de violência e idade ####
+
+
+tab_02 <- 
+sinan |> 
+  filter(DT_OCOR >= as.Date('2015-01-01')) |> 
+  select(idade, starts_with('VIOL')) |> 
+  pivot_longer(starts_with('VIOL'), names_to = 'tipo', values_to = 'n') |> 
+  filter(tipo %in% tipos,
+      idade>= 0,
+      idade <= 100 ) |> 
+  mutate(n = case_when(n == 1 ~ 1,
+                       T ~ 0)) |> 
+  group_by(idade, tipo) |> 
+  reframe(n= sum(n)) |> 
+  mutate(tipo = case_when(tipo == 'VIOL_FISIC' ~ 'Física',
+                          tipo == 'VIOL_NEGLI' ~ 'Negligência',
+                          tipo == 'VIOL_PSICO' ~ 'Psicológica',
+                          tipo == 'VIOL_SEXU' ~ 'Sexual',
+                          tipo == 'VIOL_TORT' ~ 'Tortura',
+                          T ~ 'Outras'),
+         tipo = factor(tipo, levels = c('Física', 'Psicológica', 'Outras', 'Sexual', 'Negligência', 'Tortura')),
+         n = replace_na(n, 0)  ) |> 
+  pivot_wider(names_from = tipo, values_from = n, values_fill = 0)
+
+
+write.csv(tab_02, './csv/tab_02.csv')
