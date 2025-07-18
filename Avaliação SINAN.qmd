@@ -161,7 +161,7 @@ traces_tab_01 = () => [
 
 
 {
-  const div = html`<div style="width:800px;height:100%;"></div>`;
+  const div = html`<div style="width:1200px;height:100%;"></div>`;
 
  const layout = {
     width: 1200,        // Largura fixa
