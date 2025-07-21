@@ -1,0 +1,538 @@
+---
+title: "Dashboard de Análise de Violência"
+subtitle: "Análise por Raça/Cor, Gênero e Faixa Etária"
+format: 
+  html:
+    theme: cosmo
+    toc: false
+    embed-resources: true
+    code-fold: true
+    code-summary: "Mostrar código"
+    page-layout: custom
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+# Carregar bibliotecas necessárias
+library(tidyverse)
+library(jsonlite)
+library(DT)
+
+# Carregar os dados
+dados <- read_csv('./csv/genero_raca_cor_idade_tipo_viol.csv')
+#                        
+# Verificar a estrutura dos dados
+glimpse(dados)
+
+# Converter para JSON para usar no JavaScript
+dados_json <- toJSON(dados, dataframe = "rows")
+```
+
+```{r}
+#| label: dados-preview
+#| echo: true
+#| eval: true
+
+# Prévia dos dados
+head(dados, 10)
+```
+
+```{r}
+#| label: dados-summary
+#| echo: true
+#| eval: true
+
+# Resumo dos dados
+cat("Total de registros:", nrow(dados), "\n")
+cat("Gêneros únicos:", toString(unique(dados$genero)), "\n")
+cat("Raças/cores únicas:", toString(unique(dados$raca_cor)), "\n")
+cat("Tipos de violência únicos:", toString(unique(dados$tipo_viol)), "\n")
+cat("Faixa etária:", min(dados$idade, na.rm = TRUE), "-", max(dados$idade, na.rm = TRUE), "anos\n")
+```
+
+## Dashboard Interativo
+
+ATENÇÃO: As escalas são diferentes em cada gráfico
+
+```{r}
+#| output: asis
+
+# Criar HTML com dados embutidos
+cat('<div id="dashboard-root"></div>')
+cat('<script>')
+cat('window.dadosViolencia = ', dados_json, ';')
+cat('</script>')
+```
+
+```{=html}
+<style>
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+    }
+    .quarto-title-banner {
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+    }
+    
+    main.content {
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+    }
+    
+    #dashboard-root {
+        max-width: 1400px;
+        margin: 20px auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+    
+    .controls {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .controls label {
+        font-weight: 600;
+        color: #495057;
+        margin-right: 15px;
+        font-size: 1.1em;
+    }
+    
+    .controls select {
+        padding: 12px 20px;
+        border: 2px solid #667eea;
+        border-radius: 25px;
+        font-size: 16px;
+        background: white;
+        color: #495057;
+        min-width: 200px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .controls select:hover {
+        border-color: #764ba2;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        margin-top: 20px;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #e9ecef;
+    }
+    
+    .chart-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .chart-title {
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        font-size: 1.2em;
+        padding: 10px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .chart-wrapper {
+        position: relative;
+        height: 300px;
+    }
+    
+    .loading-message {
+        text-align: center;
+        color: #6c757d;
+        padding: 50px;
+        font-style: italic;
+    }
+    
+    @media (max-width: 1200px) {
+        .charts-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        #dashboard-root {
+            margin: 10px;
+            padding: 20px;
+        }
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+<script>
+(function() {
+    'use strict';
+    
+    // Aguardar carregamento dos dados
+    function inicializarDashboard() {
+        if (typeof window.dadosViolencia === 'undefined') {
+            console.log("Aguardando dados...");
+            setTimeout(inicializarDashboard, 100);
+            return;
+        }
+        
+        const dados = window.dadosViolencia;
+        console.log("Dados carregados:", dados.length, "registros");
+        console.log("Primeira linha:", dados[0]);
+        
+        // Extrair valores únicos
+        const tiposViolencia = [...new Set(dados.map(d => d.tipo_viol))].sort();
+        const racasCores = [...new Set(dados.map(d => d.raca_cor))].sort();
+        const generos = [...new Set(dados.map(d => d.genero))].sort();
+        
+        console.log("Tipos de violência:", tiposViolencia);
+        console.log("Raças/cores:", racasCores);
+        console.log("Gêneros:", generos);
+        
+        // Armazenar os gráficos
+        const charts = {};
+        
+        // Configuração base dos gráficos
+        const baseConfig = {
+            type: 'line',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: '#667eea',
+                        borderWidth: 2,
+                        cornerRadius: 10,
+                        displayColors: true,
+                        callbacks: {
+                            title: function(context) {
+                                return 'Idade: ' + context[0].label + ' anos';
+                            },
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + ' casos';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Idade (anos)',
+                            font: {
+                                weight: 'bold',
+                                size: 14
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Casos',
+                            font: {
+                                weight: 'bold',
+                                size: 14
+                            }
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                elements: {
+                    line: {
+                        tension: 0.4,
+                        borderWidth: 3
+                    },
+                    point: {
+                        radius: 2,
+                        hoverRadius: 8
+                    }
+                }
+            }
+        };
+        
+        // Cores para os gêneros
+        const coresGenero = {
+            'Fem': {
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+            },
+            'Masc': {
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+            },
+            'NI': {
+                backgroundColor: 'rgba(128, 128, 128, 0.2)',
+                borderColor: 'rgba(128, 128, 128, 1)',
+            }
+        };
+        
+        // Função para criar nome de canvas seguro
+        function criarIdCanvas(raca) {
+            return 'chart-' + raca.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        }
+        
+        function criarGrafico(raca) {
+            const canvasId = criarIdCanvas(raca);
+            const canvas = document.getElementById(canvasId);
+            
+            if (!canvas) {
+                console.error("Canvas não encontrado:", canvasId);
+                return;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            
+            const config = JSON.parse(JSON.stringify(baseConfig));
+            
+            // Criar datasets para cada gênero
+            const datasets = generos.map(genero => {
+                const labelGenero = genero === 'Fem' ? 'Feminino' : 
+                                  genero === 'Masc' ? 'Masculino' : 
+                                  'Não Informado';
+                
+                return {
+                    label: labelGenero,
+                    data: [],
+                    ...(coresGenero[genero] || {
+                        backgroundColor: 'rgba(128, 128, 128, 0.2)',
+                        borderColor: 'rgba(128, 128, 128, 1)',
+                    }),
+                    fill: false
+                };
+            });
+            
+            config.data = {
+                labels: [],
+                datasets: datasets
+            };
+            
+            charts[raca] = new Chart(ctx, config);
+        }
+        
+        function atualizarGraficos() {
+            const tipoSelecionado = document.getElementById('tipoViolencia').value;
+            console.log("Atualizando gráficos para tipo:", tipoSelecionado);
+            
+            racasCores.forEach(raca => {
+                const chart = charts[raca];
+                if (!chart) {
+                    console.error("Gráfico não encontrado para raça:", raca);
+                    return;
+                }
+                
+                // Filtrar dados para esta raça e tipo de violência
+                const dadosFiltrados = dados.filter(d => 
+                    d.raca_cor === raca && d.tipo_viol === tipoSelecionado
+                );
+                
+                console.log(`Dados filtrados para ${raca}:`, dadosFiltrados.length);
+                
+                // Agrupar por idade e gênero
+                const dadosAgrupados = {};
+                dadosFiltrados.forEach(d => {
+                    const idade = d.idade;
+                    const genero = d.genero;
+                    const valor = d.n || 0;
+                    
+                    if (!dadosAgrupados[idade]) {
+                        dadosAgrupados[idade] = {};
+                    }
+                    if (!dadosAgrupados[idade][genero]) {
+                        dadosAgrupados[idade][genero] = 0;
+                    }
+                    dadosAgrupados[idade][genero] += valor;
+                });
+                
+                // Preparar dados para o gráfico
+                const idades = Object.keys(dadosAgrupados).map(Number).sort((a, b) => a - b);
+                
+                // Atualizar o gráfico
+                chart.data.labels = idades;
+                
+                generos.forEach((genero, index) => {
+                    if (chart.data.datasets[index]) {
+                        chart.data.datasets[index].data = idades.map(idade => 
+                            dadosAgrupados[idade] && dadosAgrupados[idade][genero] 
+                                ? dadosAgrupados[idade][genero] 
+                                : 0
+                        );
+                    }
+                });
+                
+                chart.update('none');
+            });
+        }
+        
+        function criarInterface() {
+            const root = document.getElementById('dashboard-root');
+            
+            // Criar controles
+            const controls = document.createElement('div');
+            controls.className = 'controls';
+            
+            const label = document.createElement('label');
+            label.textContent = 'Tipo de Violência:';
+            label.setAttribute('for', 'tipoViolencia');
+            
+            const select = document.createElement('select');
+            select.id = 'tipoViolencia';
+            
+            // Preencher dropdown
+            tiposViolencia.forEach(tipo => {
+                const option = document.createElement('option');
+                option.value = tipo;
+                option.textContent = tipo.replace('VIOL_', '').replace('_', ' ');
+                select.appendChild(option);
+            });
+            
+            controls.appendChild(label);
+            controls.appendChild(select);
+            root.appendChild(controls);
+            
+            // Criar grid de gráficos
+            const grid = document.createElement('div');
+            grid.className = 'charts-grid';
+            
+            racasCores.forEach(raca => {
+                const container = document.createElement('div');
+                container.className = 'chart-container';
+                
+                const title = document.createElement('div');
+                title.className = 'chart-title';
+                title.textContent = `Raça/Cor: ${raca}`;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'chart-wrapper';
+                
+                const canvas = document.createElement('canvas');
+                canvas.id = criarIdCanvas(raca);
+                
+                wrapper.appendChild(canvas);
+                container.appendChild(title);
+                container.appendChild(wrapper);
+                grid.appendChild(container);
+            });
+            
+            root.appendChild(grid);
+        }
+        
+        // Inicializar tudo
+        criarInterface();
+        
+        // Criar gráficos
+        racasCores.forEach(raca => {
+            criarGrafico(raca);
+        });
+        
+        // Primeira atualização
+        atualizarGraficos();
+        
+        // Event listener
+        document.getElementById('tipoViolencia').addEventListener('change', atualizarGraficos);
+        
+        console.log("Dashboard inicializado com sucesso!");
+    }
+    
+    // Iniciar quando a página estiver pronta
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', inicializarDashboard);
+    } else {
+        inicializarDashboard();
+    }
+})();
+</script>
+```
+
+## Resumo dos Dados por Tipo de Violência
+
+```{r}
+#| label: tabela-resumo
+#| echo: false
+
+# Criar tabela resumo
+resumo <- dados %>%
+  group_by(tipo_viol, genero) %>%
+  summarise(
+    total_casos = sum(n, na.rm = TRUE),
+    idade_media = round(weighted.mean(idade, n, na.rm = TRUE), 1),
+    .groups = 'drop'
+  ) %>%
+  pivot_wider(
+    names_from = genero, 
+    values_from = c(total_casos, idade_media),
+    names_sep = "_"
+  )
+
+DT::datatable(
+  resumo,
+  options = list(
+    pageLength = 10,
+    scrollX = TRUE,
+    language = list(url = "//cdn.datatables.net/plug-ins/1.10.11/i18n/Portuguese-Brasil.json")
+  ),
+  caption = "Resumo dos casos de violência por tipo e gênero"
+) %>%
+  DT::formatStyle(columns = 1:ncol(resumo), fontSize = '12px')
+```

@@ -1,0 +1,87 @@
+---
+title: "Visualização Interativa R + Observable JS"
+format: html
+execute:
+  freeze: auto
+  echo: false
+---
+
+# Esacalas não comparáveis
+
+```{ojs}
+
+// Importar Plot do Observable
+Plot = import("https://cdn.skypack.dev/@observablehq/plot")
+// Controles reativos do Observable
+import { Inputs } from "@observablehq/inputs"
+
+// Carrega a biblioteca Plotly.js de forma robusta
+Plotly = require("plotly.js-dist@2.27.0")
+
+// Carrega o arquivo CSV local
+tabela_ojs = FileAttachment("/csv/tab_idade_raca_genero.csv").csv({ typed: true })
+
+// Processar os dados vindos do R
+data = tabela_ojs.map((d, i) => ({
+  X: d.X,
+  genero: d.genero,
+  idade: d.idade, 
+  raca_cor: d.raca_cor,
+  n: d.n
+}))
+
+// Obter categorias únicas de raça/cor para criar as facetas
+racas = [...new Set(data.map(d => d.raca_cor))]
+
+// Definir cores para cada gênero
+colorScale = new Map([
+  ["Fem", "#FC8D62"],
+  ["Masc", "#66C2A5"]
+])
+
+// Criar função para gerar gráfico individual por raça
+function createChart(raca) {
+  const filteredData = data.filter(d => d.raca_cor === raca)
+  
+  return Plot.plot({
+    title: raca,
+    width: 300,
+    height: 250,
+    marginLeft: 60,
+    marginBottom: 40,
+    color: {
+      legend: true,
+      domain: ["Fem", "Masc"],
+      range: ["#FC8D62", "#66C2A5"]
+    },
+    x: {
+      label: "Idade",
+      domain: [Math.min(...filteredData.map(d => d.idade)), Math.max(...filteredData.map(d => d.idade))]
+    },
+    y: {
+      label: "N",
+      domain: [0, Math.max(...filteredData.map(d => d.n))]
+    },
+    marks: [
+      Plot.line(filteredData, {
+        x: "idade",
+        y: "n",
+        stroke: "genero",
+        strokeWidth: 2
+      }),
+      Plot.dot(filteredData, {
+        x: "idade",
+        y: "n",
+        fill: "genero",
+        r: 3
+      })
+    ]
+  })
+}
+
+// Criar container para o grid
+html`<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center;">
+  ${racas.map(raca => html`<div>${createChart(raca)}</div>`)}
+</div>`
+```
+

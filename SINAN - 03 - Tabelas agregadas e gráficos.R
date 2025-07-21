@@ -1,6 +1,6 @@
 rm(list = ls())
 pacman::p_load(tidyverse, RColorBrewer, ggiraph, gtable, grid)
-load('./rda/sinan')
+load('./rda/sinan.rda')
 
 
 # Auxiliares
