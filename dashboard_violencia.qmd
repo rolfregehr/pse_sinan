@@ -461,7 +461,7 @@ cat('</script>')
                 
                 const title = document.createElement('div');
                 title.className = 'chart-title';
-                title.textContent = `Raça/Cor: ${raca}`;
+                title.textContent = `${raca}`;
                 
                 const wrapper = document.createElement('div');
                 wrapper.className = 'chart-wrapper';
