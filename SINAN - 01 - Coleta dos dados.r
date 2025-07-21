@@ -40,7 +40,6 @@ if (length(viol_files) > 0) {
   message("Nenhum arquivo que inicia com 'VIOL' encontrado no FTP.")
 }
 
-message("Processo concluído.")
 
 # Info VIOL preliminar
 url_prelim <- "ftp://ftp.datasus.gov.br/dissemin/publicos/SINAN/DADOS/PRELIM/"

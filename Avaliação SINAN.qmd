@@ -293,7 +293,8 @@ traces_tab_02 = () => [
       x: 0.5,
       xanchor: 'center'
     },
-    xaxis: { title: "Idade da vítima" },
+    xaxis: { title: "Idade da vítima" ,
+             dtick: 5},
     yaxis: { title: "Número de casos" },
     margin: { t: 50, r: 150 }, // margem direita para os botões
     legend: { title: { text: "Clique para ocultar/exibir" } },
